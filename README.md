@@ -54,7 +54,7 @@ To develop local extensions use the `docker-compose.dev.yml` file:
 
 To build the images:
 
-	docker-compose -f docker-compose.dev.yml build
+    ./rebuild-ckan.sh  # If starting from new, the script will take at least 10 minutes to run.
 
 To start the containers:
 
@@ -62,6 +62,17 @@ To start the containers:
 
 See [CKAN Images](#ckan-images) for more details of what happens when using development mode.
 
+To ssh onto the ckan container:
+
+    docker exec -it docker-ckan_ckan-dev_1 bash
+
+To ssh onto the postgres container:
+
+    docker exec -it ckan_db psql -U ckan
+
+To reset docker images (warning this will remove all stopped images) -
+
+    ./reset-docker.sh
 
 ### Create an extension
 
