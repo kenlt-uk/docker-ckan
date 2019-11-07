@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     links:
-      - ckan_db
+      - db
       - solr
       - redis
     ports:
@@ -20,13 +20,13 @@ services:
       - ckan_storage:/var/lib/ckan
       - ./logs:/var/log/ckan
     depends_on: 
-      - ckan_db
+      - db
       - solr
       - redis
+    command: /srv/app/start_ckan_development.sh
 
-
-  ckan_db:
-    container_name: ckan_db
+  db:
+    container_name: db
     env_file:
       - .env
     build:
