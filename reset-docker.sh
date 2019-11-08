@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 docker-compose down
 
 docker rm $(docker ps -a -f status=exited -f status=created -q)
