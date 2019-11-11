@@ -23,7 +23,6 @@ services:
       - db
       - solr
       - redis
-    command: /srv/app/start_ckan_development.sh
 
   db:
     container_name: db
