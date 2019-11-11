@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-docker-compose down
+docker-compose -f docker-compose.dev.yml down
 
 docker rm $(docker ps -a -f status=exited -f status=created -q)
 
