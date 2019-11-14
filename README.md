@@ -74,6 +74,14 @@ To reset docker images (warning this will remove all stopped images) -
 
     ./reset-docker.sh
 
+### Running tests for extensions
+
+Run tests in `/srv/app/src_extensions/<ckanext directory>`
+
+Eg for `ckanext-harvest` navigate to `/srv/app/src_extensions/ckanext-harvest`
+
+    nosetests --ckan --with-pylons=test-core.ini ckanext/harvest/tests
+
 ### Create an extension
 
 You can use the paster template in much the same way as a source install, only executing the command inside the CKAN container and setting the mounted `src/` folder as output:
