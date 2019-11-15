@@ -52,9 +52,13 @@ To start the containers:
 
 To develop local extensions use the `docker-compose.dev.yml` file:
 
+To setup your dev environment by cloning ckan and the extensions to your local src directory:
+
+    ./scripts/bootstrap.sh
+
 To build the images:
 
-    ./rebuild-ckan.sh  # If starting from new, the script will take at least 10 minutes to run.
+    ./scripts/rebuild-ckan.sh  # If starting from new, the script will take at least 15 minutes to run.
 
 To start the containers:
 
@@ -72,7 +76,7 @@ To ssh onto the postgres container:
 
 To reset docker images (warning this will remove all stopped images) -
 
-    ./reset-docker.sh
+    ./scripts/reset-docker.sh
 
 ### Running tests for extensions
 
