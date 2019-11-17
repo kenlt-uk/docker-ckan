@@ -1,10 +1,33 @@
 version: "3"
 
 services:
-  ckan-dev:
+  # ckan-dev:
+  #   build:
+  #     context: ckan/
+  #     dockerfile: Dockerfile.dev
+  #     args:
+  #       - TZ=${TZ}
+    # env_file:
+    #   - .env
+    # links:
+    #   - db
+    #   - solr
+    #   - redis
+    # ports:
+    #   - "0.0.0.0:${CKAN_PORT}:5000"
+    # volumes:
+    #   - ./src:/srv/app/src_extensions
+    #   - ckan_storage:/var/lib/ckan
+    #   - ./logs:/var/log/ckan
+    # depends_on: 
+    #   - db
+    #   - solr
+    #   - redis
+
+  ckan-postdev:
     build:
-      context: ckan/
-      dockerfile: Dockerfile.dev
+      context: ckan-postdev/
+      dockerfile: Dockerfile
       args:
         - TZ=${TZ}
     env_file:
@@ -23,6 +46,7 @@ services:
       - db
       - solr
       - redis
+    command: bash -c "/srv/app/start_ckan_development.sh"
 
   db:
     container_name: db
