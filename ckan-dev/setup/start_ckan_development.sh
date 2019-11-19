@@ -57,7 +57,7 @@ paster --plugin=ckan config-tool $SRC_DIR/ckan/test-core.ini \
     "ckan.datstore.read_url = $TEST_CKAN_DATASTORE_READ_URL" \
     "ckan.site_url = ${TEST_CKAN_SITE_URL}" \
     "solr_url = $TEST_CKAN_SOLR_URL" \
-    "ckan.redis_url = $TEST_CKAN_REDIS_URL"
+    "ckan.redis.url = $TEST_CKAN_REDIS_URL"
 
 # Run the prerun script to init CKAN and create the default admin user
 python prerun.py

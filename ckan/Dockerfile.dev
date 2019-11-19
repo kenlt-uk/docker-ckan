@@ -3,11 +3,6 @@ FROM alphagov/ckan-dev:2.7
 
 MAINTAINER Your Name Here <you@example.com>
 
-# Set timezone
-ARG TZ
-RUN cp /usr/share/zoneinfo/$TZ /etc/localtime
-RUN echo $TZ > /etc/timezone
-
 # Install any extensions needed by your CKAN instance
 # (Make sure to add the plugins to CKAN__PLUGINS in the .env file)
 
@@ -19,11 +14,11 @@ RUN which python && \
     pip install -r https://raw.githubusercontent.com/alphagov/ckanext-dcat/6253f296c6d1200465a3223710d076cd24e37834/requirements.txt && \
     pip install -e git+https://github.com/alphagov/ckanext-harvest.git@0ba5e11cc89c1560ab724bac42f84180bcfab019#egg=ckanext-harvest && \
     pip install -r https://raw.githubusercontent.com/alphagov/ckanext-harvest/0ba5e11cc89c1560ab724bac42f84180bcfab019/pip-requirements.txt && \
-#    pip install -e git+https://github.com/alphagov/ckanext-spatial.git@b86a7189577285169b0cb5ed93f145387debeec6#egg=ckanext-spatial && \
+    pip install -e git+https://github.com/alphagov/ckanext-spatial.git@b86a7189577285169b0cb5ed93f145387debeec6#egg=ckanext-spatial && \
     pip install -r https://raw.githubusercontent.com/alphagov/ckanext-spatial/b86a7189577285169b0cb5ed93f145387debeec6/pip-requirements.txt && \
     pip install -e git+https://github.com/alphagov/ckanext-s3-resources.git@81eb36fb51da5e216e9405a7ad64c4096881ca85#egg=ckanext-s3-resources && \
     pip install -r https://raw.githubusercontent.com/alphagov/ckanext-s3-resources/81eb36fb51da5e216e9405a7ad64c4096881ca85/requirements.txt && \
-#    pip install -e git://github.com/alphagov/ckanext-datagovuk.git@release_122#egg=ckanext-datagovuk && \
+    pip install -e git://github.com/alphagov/ckanext-datagovuk.git@release_122#egg=ckanext-datagovuk && \
     pip install -r https://raw.githubusercontent.com/alphagov/ckanext-datagovuk/release_155/requirements.txt
 
 # Clone the extension(s) your are writing for your own project in the `src` folder
