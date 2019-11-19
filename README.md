@@ -74,9 +74,15 @@ To ssh onto the postgres container:
 
     docker exec -it db psql -U ckan
 
-To reset docker images (warning this will remove all stopped images) -
+To reset docker ckan -
 
-    ./scripts/reset-docker.sh
+for help
+
+    ./scripts/reset-ckan.sh help
+
+to pass in args
+
+    ./scripts/reset-ckan.sh <image (postdev, ckan, ckan-dev, ckan-base)> <reset volumes (Yn)>
 
 ### Running tests for extensions
 
