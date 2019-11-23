@@ -110,6 +110,20 @@ To run a container and be able to add a breakpoint with `pdb` or `ipdb`, run the
 This will start a new container, displaying the standard output in your terminal. If you add a breakpoint in a source file in the `src` folder (`import pdb; pdb.set_trace()`) you will be able to inspect it in this terminal next time the code is executed.
 
 
+### Running the remote debugger remote-pdb
+
+This is useful when debugging tests.
+
+Add the following line to the part of the code to set a breakpoint:
+
+    import remote_pdb; remote_pdb.set_trace(host='0.0.0.0', port=3000)
+
+After a remote pdb session is available, `RemotePdb session open at 0.0.0.0:3000`, then on another terminal connect to the debugger using `telnet`:
+
+    telnet localhost 3000
+
+You should now be connected to the debugger to start your investigations
+
 ## CKAN images
 
 ```
