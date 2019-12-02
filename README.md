@@ -88,9 +88,33 @@ to pass in args
 
 Run tests in `/srv/app/src_extensions/<ckanext directory>`
 
-Eg for `ckanext-harvest` navigate to `/srv/app/src_extensions/ckanext-harvest`
+#### ckanext-harvest
 
-    nosetests --ckan --with-pylons=test-core.ini ckanext/harvest/tests
+    cd /srv/app/src_extensions/ckanext-harvest ; nosetests --ckan  --nologcapture --with-pylons=test-core.ini ckanext/harvest/tests
+
+#### ckanext-spatial
+
+    cd /srv/app/src_extensions/ckanext-spatial ; nosetests --ckan --nologcapture --with-pylons=test.ini ckanext/spatial/tests
+
+#### ckanext-dcat
+
+    cd /srv/app/src_extensions/ckanext-dcat ; nosetests --ckan --nologcapture --with-pylons=test.ini ckanext/dcat/tests
+
+4 tests are failing -
+
+    cd /srv/app/src_extensions/ckanext-dcat ; nosetests --ckan --nologcapture --with-pylons=test.ini ckanext/dcat/tests/test_schemaorg_profile_serialize.py:TestSchemaOrgProfileSerializeDataset.test_graph_from_dataset
+
+    cd /srv/app/src_extensions/ckanext-dcat ; nosetests --ckan  --nologcapture --with-pylons=test.ini ckanext/dcat/tests/test_controllers.py:TestEndpoints.test_catalog_pagination
+
+    cd /srv/app/src_extensions/ckanext-dcat ; nosetests --ckan  --nologcapture --with-pylons=test.ini ckanext/dcat/tests/test_controllers.py:TestEndpoints.test_catalog_pagination_parameters
+
+    cd /srv/app/src_extensions/ckanext-dcat ; nosetests --ckan  --nologcapture --with-pylons=test.ini ckanext/dcat/tests/test_schemaorg_profile_serialize.py:TestSchemaOrgProfileSerializeDataset.test_graph_from_dataset
+
+    cd /srv/app/src_extensions/ckanext-dcat ; nosetests --ckan  --nologcapture --with-pylons=test.ini ckanext/dcat/tests/test_schemaorg_profile_serialize.py:TestSchemaOrgProfileSerializeDataset.test_groups
+
+These tests appear to be failing because it is picking up the `ckan.site_url` as localhost:5000 rather than the TEST_CKAN_SITE_URL value of `test.ckan.net`. There might be a test configuration setting to enable the test site url to be correctly picked up.
+
+Setting `ckan.site_url` to `http://test.ckan.net` fixes the issue but this needs the hosts file to be updated on your machine to work.
 
 ### Create an extension
 
@@ -109,6 +133,20 @@ To run a container and be able to add a breakpoint with `pdb` or `ipdb`, run the
 
 This will start a new container, displaying the standard output in your terminal. If you add a breakpoint in a source file in the `src` folder (`import pdb; pdb.set_trace()`) you will be able to inspect it in this terminal next time the code is executed.
 
+
+### Running the remote debugger remote-pdb
+
+This is useful when debugging tests.
+
+Add the following line to the part of the code to set a breakpoint:
+
+    import remote_pdb; remote_pdb.set_trace(host='0.0.0.0', port=3000)
+
+After a remote pdb session is available, `RemotePdb session open at 0.0.0.0:3000`, then on another terminal connect to the debugger using `telnet`:
+
+    telnet localhost 3000
+
+You should now be connected to the debugger to start your investigations
 
 ## CKAN images
 
@@ -132,7 +170,7 @@ This will start a new container, displaying the standard output in your terminal
 The Docker images used to build your CKAN project are located in the `ckan/` folder. There are two Docker files:
 
 * `Dockerfile`: this is based on `openknowledge/ckan-base` (with the `Dockerfile` on the `/ckan-base/<version>` folder), an image with CKAN with all its dependencies, properly configured and running on [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/) (production setup)
-* `Dockerfile.dev`: this is based on `openknowledge/ckan-dev` (with the `Dockerfile` on the `/ckan-dev/<version>` folder), wich extends `openknowledge/ckan-base` to include:
+* `Dockerfile.dev`: this is based on `openknowledge/ckan-dev` (with the `Dockerfile` on the `/ckan-dev/<version>` folder), which extends `openknowledge/ckan-base` to include:
 
   * Any extension cloned on the `src` folder will be installed in the CKAN container when booting up Docker Compose (`docker-compose up`). This includes installing any requirements listed in a `requirements.txt` (or `pip-requirements.txt`) file and running `python setup.py develop`.
   * The CKAN image used will development requirements needed to run the tests .
