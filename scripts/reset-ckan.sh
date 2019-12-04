@@ -21,24 +21,24 @@ function remove_ckan {
 
 function remove_ckan_dev {
     remove_ckan
-    echo "Removing ckan-dev images..."
+    echo "Removing dev images..."
     docker images | grep "alphagov/ckan-dev .*" | awk '{print $3}' | xargs docker rmi
 }
 
 function remove_ckan_base {
     remove_ckan_dev
-    echo "Removing ckan-base images..."
+    echo "Removing base images..."
     docker images | grep "alphagov/ckan-base .*" | awk '{print $3}' | xargs docker rmi
 }
 
 if [[ ! -z $1 && $1 == 'help' ]]; then
-    echo "Usage: ./scripts/reset-ckan.sh <images from (postdev, ckan, ckan-dev, ckan-base)> <remove volumes (Yn)> "
+    echo "Usage: ./scripts/reset-ckan.sh <images from (postdev, ckan, dev, base)> <remove volumes (Yn)> "
 else
 
     while True; do
         remove=$1
         if [[ -z $remove ]]; then
-            read -p "remove images (postdev, ckan, ckan-dev, ckan-base): " remove
+            read -p "remove images (postdev, ckan, dev, base): " remove
         fi
 
         if [[ $remove == "postdev" ]]; then
@@ -47,10 +47,10 @@ else
         elif [[ $remove == "ckan" ]]; then
             remove_ckan
             break
-        elif [[ $remove == "ckan-dev" ]]; then
+        elif [[ $remove == "dev" ]]; then
             remove_ckan_dev
             break
-        elif [[ $remove == "ckan-base" ]]; then
+        elif [[ $remove == "base" ]]; then
             remove_ckan_base
             break
         else 
