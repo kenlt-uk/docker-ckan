@@ -82,7 +82,7 @@ for help
 
 to pass in args
 
-    ./scripts/reset-ckan.sh <image (postdev, ckan, ckan-dev, ckan-base)> <reset volumes (Yn)>
+    ./scripts/reset-ckan.sh <image (postdev, ckan, dev, base)> <reset volumes (Yn)>
 
 ### Running tests for extensions
 
