@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Set up Harvest DB"
+echo "====== Set up Harvest database ======"
 
 paster --plugin=ckanext-harvest harvester initdb -c "$CKAN_INI"
 

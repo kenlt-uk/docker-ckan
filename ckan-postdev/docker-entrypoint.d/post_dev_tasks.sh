@@ -1,4 +1,5 @@
-# Add post dev tasks such as changing config settings
+# Add post dev tasks such as changing config settings, these should be moved to 
+# the ckan project so that this file can be used to test out development of new features
 
 echo "================ post dev tasks ================"
 

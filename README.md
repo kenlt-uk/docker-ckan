@@ -68,7 +68,7 @@ See [CKAN Images](#ckan-images) for more details of what happens when using deve
 
 To ssh onto the ckan container:
 
-    docker exec -it docker-ckan_ckan-dev_1 bash
+    docker exec -it docker-ckan_ckan-postdev_1 bash
 
 To ssh onto the postgres container:
 
@@ -82,7 +82,7 @@ for help
 
 to pass in args
 
-    ./scripts/reset-ckan.sh <image (postdev, ckan, ckan-dev, ckan-base)> <reset volumes (Yn)>
+    ./scripts/reset-ckan.sh <image (postdev, ckan, dev, base)> <reset volumes (Yn)>
 
 ### Running tests for extensions
 
@@ -133,6 +133,9 @@ To run a container and be able to add a breakpoint with `pdb` or `ipdb`, run the
 
 This will start a new container, displaying the standard output in your terminal. If you add a breakpoint in a source file in the `src` folder (`import pdb; pdb.set_trace()`) you will be able to inspect it in this terminal next time the code is executed.
 
+### Logs
+
+All ckan logs are available under `./logs` on your machine.
 
 ### Running the remote debugger remote-pdb
 
@@ -241,3 +244,5 @@ ckan
 ## Known Issues
 
 * Running the tests: Running the tests for CKAN or an extension inside the container will delete your current database. We need to patch CKAN core in our image to work around that.
+
+* The SOLR index does not contain harvest metadata which is required by the CSW load job. A work around has been to run a solr reindex cronjob every 5 minutes to ensure that it picks up the latest when a harvest job is run. On production there is a similar cron job running but it only runs once a day.

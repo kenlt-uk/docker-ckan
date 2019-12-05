@@ -8,7 +8,7 @@ MAINTAINER Your Name Here <you@example.com>
 
 ENV DCAT_SHA=6253f296c6d1200465a3223710d076cd24e37834
 ENV HARVEST_SHA=0ba5e11cc89c1560ab724bac42f84180bcfab019
-ENV SPATIAL_SHA=5d711dbddb8ce0839c2bfa2786ac31eb73f85db5
+ENV SPATIAL_SHA=b86a7189577285169b0cb5ed93f145387debeec6
 ENV S3_SHA=81eb36fb51da5e216e9405a7ad64c4096881ca85
 ENV DATAGOVUK_VERSION=release_155
 
@@ -44,3 +44,24 @@ RUN for d in $APP_DIR/patches/*; do \
             done ; \
         fi ; \
     done
+
+# Copy any files in setup to the APP_DIR
+COPY setup $APP_DIR
+
+# Setup pycsw
+WORKDIR $SRC_EXTENSIONS_DIR
+
+RUN git clone  --branch 2.4.0 https://github.com/geopython/pycsw.git && \
+    cd pycsw && \
+    pip install -e . && \
+    python setup.py build && \
+    python setup.py install && \
+    chown ckan $APP_DIR/pycsw.cfg && \
+    chmod 644 $APP_DIR/pycsw.cfg && \
+    echo "*/5 * * * * paster --plugin=ckanext-spatial ckan-pycsw load -p $APP_DIR/pycsw.cfg -u http://localhost:5000" > /etc/crontabs/root
+
+# Add cronjob to rebuild the SOLR search index.
+# This is the only way to guarantee that extras_harvest_object_id
+# is available in SOLR otherwise the search query in ckan_pycsw.py will fail.
+# Once the issue to provide the harvest metadata in SOLR is fixed this cronjob can be removed.
+RUN echo "*/5 * * * * paster --plugin=ckan search-index rebuild -r -c $APP_DIR/production.ini" >> /etc/crontabs/root
