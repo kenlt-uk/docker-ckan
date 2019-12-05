@@ -51,17 +51,17 @@ COPY setup $APP_DIR
 # Setup pycsw
 WORKDIR $SRC_EXTENSIONS_DIR
 
-RUN git clone  --branch 2.4.0 https://github.com/geopython/pycsw.git ; \
-    cd pycsw ; \
-    pip install -e . ; \
-    python setup.py build ; \
-    python setup.py install ; \
-    chown ckan $APP_DIR/pycsw.cfg ; \
-    chmod 644 $APP_DIR/pycsw.cfg ; \
-    echo "*/5 * * * * paster --plugin=ckanext-spatial ckan-pycsw load -p $APP_DIR/pycsw.cfg -u http://localhost:5000" > /etc/crontabs/root ;
+RUN git clone  --branch 2.4.0 https://github.com/geopython/pycsw.git && \
+    cd pycsw && \
+    pip install -e . && \
+    python setup.py build && \
+    python setup.py install && \
+    chown ckan $APP_DIR/pycsw.cfg && \
+    chmod 644 $APP_DIR/pycsw.cfg && \
+    echo "*/5 * * * * paster --plugin=ckanext-spatial ckan-pycsw load -p $APP_DIR/pycsw.cfg -u http://localhost:5000" > /etc/crontabs/root
 
 # Add cronjob to rebuild the SOLR search index.
 # This is the only way to guarantee that extras_harvest_object_id
 # is available in SOLR otherwise the search query in ckan_pycsw.py will fail.
 # Once the issue to provide the harvest metadata in SOLR is fixed this cronjob can be removed.
-RUN echo "*/5 * * * * paster --plugin=ckan search-index rebuild -r -c $APP_DIR/production.ini" >> /etc/crontabs/root ;
+RUN echo "*/5 * * * * paster --plugin=ckan search-index rebuild -r -c $APP_DIR/production.ini" >> /etc/crontabs/root
