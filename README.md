@@ -151,6 +151,20 @@ After a remote pdb session is available, `RemotePdb session open at 0.0.0.0:3000
 
 You should now be connected to the debugger to start your investigations
 
+### Accessing ckan publisher and csw endpoint via Nginx
+
+CKAN publisher:
+  
+  http://localhost:5001/ 
+
+CSW endpoint:
+  
+  http://locahost:5001/csw
+
+CSW summary:
+
+  http://localhost:5001/csw?service=CSW&version=2.0.2&request=GetRecords&typenames=csw:Record&elementsetname=brief
+
 ## CKAN images
 
 ```
