@@ -45,10 +45,12 @@ RUN for d in $APP_DIR/patches/*; do \
         fi ; \
     done
 
-# Copy any files in setup to the APP_DIR
-COPY setup $APP_DIR
-
 # Setup pycsw
+COPY setup/pycsw.cfg $APP_DIR/pycsw.cfg
+COPY setup/pycsw_supervisord.conf /etc/supervisord.d/pycsw_supervisord.conf
+
+ENV PYCSW_CONFIG=$APP_DIR/pycsw.cfg 
+
 WORKDIR $SRC_EXTENSIONS_DIR
 
 RUN git clone  --branch 2.4.0 https://github.com/geopython/pycsw.git && \
