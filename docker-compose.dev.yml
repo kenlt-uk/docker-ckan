@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile
       args:
         - TZ=${TZ}
+        # set DISABLE_CRON to 1 to disable harvest & pycsw cronjobs (good idea when running tests)
+        - DISABLE_CRON=0
     env_file:
       - .env
     links:
