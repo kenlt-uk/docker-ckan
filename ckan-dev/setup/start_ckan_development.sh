@@ -47,7 +47,10 @@ paster --plugin=ckan config-tool $CKAN_INI -s DEFAULT "debug = true"
 
 # Update the plugins setting in the ini file with the values defined in the env var
 echo "Loading the following plugins: $CKAN__PLUGINS"
-paster --plugin=ckan config-tool $CKAN_INI "ckan.plugins = $CKAN__PLUGINS"
+paster --plugin=ckan config-tool $CKAN_INI \
+    "sqlalchemy.url = $DEV_CKAN_SQLALCHEMY_URL" \
+    "ckan.site_url = $DEV_CKAN_SITE_URL" \
+    "ckan.plugins = $CKAN__PLUGINS"
 
 # Update test-core.ini DB, SOLR & Redis settings
 echo "Loading test settings into test-core.ini"
@@ -75,8 +78,16 @@ then
     done
 fi
 
-# Start supervisord
-supervisord --configuration /etc/supervisord.conf &
+if [[ $START_CKAN = 1 ]]; then
+    echo "Starting CKAN..."
 
-# Start the development server with automatic reload
-paster serve --reload $CKAN_INI
+    # Start supervisord
+    supervisord --configuration /etc/supervisord.conf &
+
+    # Start the development server with automatic reload
+    paster serve --reload $CKAN_INI
+else
+    # just to keep container running
+    echo "Keeping container running..."
+    tail -f /dev/null
+fi
