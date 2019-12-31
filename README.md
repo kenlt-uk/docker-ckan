@@ -90,31 +90,19 @@ Run tests in `/srv/app/src_extensions/<ckanext directory>`
 
 #### ckanext-harvest
 
-    cd /srv/app/src_extensions/ckanext-harvest ; nosetests --ckan  --nologcapture --with-pylons=test-core.ini ckanext/harvest/tests
+    nosetests --ckan  --nologcapture --with-pylons=$SRC_EXTENSIONS_DIR/ckanext-harvest/test-core.ini ckanext.harvest
 
 #### ckanext-spatial
 
-    cd /srv/app/src_extensions/ckanext-spatial ; nosetests --ckan --nologcapture --with-pylons=test.ini ckanext/spatial/tests
+    nosetests --ckan --nologcapture --with-pylons=$SRC_EXTENSIONS_DIR/ckanext-spatial/test.ini ckanext.spatial
 
 #### ckanext-dcat
 
-    cd /srv/app/src_extensions/ckanext-dcat ; nosetests --ckan --nologcapture --with-pylons=test.ini ckanext/dcat/tests
+    nosetests --ckan --nologcapture --with-pylons=$SRC_EXTENSIONS_DIR/ckanext-dcat/test.ini ckanext.dcat
 
-4 tests are failing -
+#### ckanext-datagovuk
 
-    cd /srv/app/src_extensions/ckanext-dcat ; nosetests --ckan --nologcapture --with-pylons=test.ini ckanext/dcat/tests/test_schemaorg_profile_serialize.py:TestSchemaOrgProfileSerializeDataset.test_graph_from_dataset
-
-    cd /srv/app/src_extensions/ckanext-dcat ; nosetests --ckan  --nologcapture --with-pylons=test.ini ckanext/dcat/tests/test_controllers.py:TestEndpoints.test_catalog_pagination
-
-    cd /srv/app/src_extensions/ckanext-dcat ; nosetests --ckan  --nologcapture --with-pylons=test.ini ckanext/dcat/tests/test_controllers.py:TestEndpoints.test_catalog_pagination_parameters
-
-    cd /srv/app/src_extensions/ckanext-dcat ; nosetests --ckan  --nologcapture --with-pylons=test.ini ckanext/dcat/tests/test_schemaorg_profile_serialize.py:TestSchemaOrgProfileSerializeDataset.test_graph_from_dataset
-
-    cd /srv/app/src_extensions/ckanext-dcat ; nosetests --ckan  --nologcapture --with-pylons=test.ini ckanext/dcat/tests/test_schemaorg_profile_serialize.py:TestSchemaOrgProfileSerializeDataset.test_groups
-
-These tests appear to be failing because it is picking up the `ckan.site_url` as localhost:5000 rather than the TEST_CKAN_SITE_URL value of `test.ckan.net`. There might be a test configuration setting to enable the test site url to be correctly picked up.
-
-Setting `ckan.site_url` to `http://test.ckan.net` fixes the issue but this needs the hosts file to be updated on your machine to work.
+    nosetests -v --nologcapture --with-pylons=$SRC_EXTENSIONS_DIR/ckanext-datagovuk/test.ini --ckan ckanext.datagovuk
 
 ### Create an extension
 
@@ -155,15 +143,15 @@ You should now be connected to the debugger to start your investigations
 
 CKAN publisher:
   
-  http://localhost:5001/ 
+  http://localhost:5000/ 
 
 CSW endpoint:
   
-  http://locahost:5001/csw
+  http://locahost:5000/csw
 
 CSW summary:
 
-  http://localhost:5001/csw?service=CSW&version=2.0.2&request=GetRecords&typenames=csw:Record&elementsetname=brief
+  http://localhost:5000/csw?service=CSW&version=2.0.2&request=GetRecords&typenames=csw:Record&elementsetname=brief
 
 ## CKAN images
 
