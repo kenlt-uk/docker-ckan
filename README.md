@@ -102,7 +102,17 @@ Run tests in `/srv/app/src_extensions/<ckanext directory>`
 
 #### ckanext-datagovuk
 
-    nosetests -v --nologcapture --with-pylons=$SRC_EXTENSIONS_DIR/ckanext-datagovuk/test.ini --ckan ckanext.datagovuk
+    nosetests --ckan -v --nologcapture --with-pylons=$SRC_EXTENSIONS_DIR/ckanext-datagovuk/test.ini ckanext.datagovuk
+
+#### target tests 
+
+    nosetests ... ckanext.<ckanext extension>.tests.<filename without .py>:<test class name>.<test class method>
+    `replace ... with the nosetests args`
+
+For example:
+
+    nosetests --ckan -v --nologcapture --with-pylons=$SRC_EXTENSIONS_DIR/ckanext-datagovuk/test.ini ckanext.datagovuk.tests.test_package:TestPackageController.test_package_create_show
+
 
 ### Create an extension
 
