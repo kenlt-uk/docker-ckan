@@ -7,6 +7,7 @@ import time
 import re
 
 ckan_ini = os.environ.get('CKAN_INI', '/srv/app/production.ini')
+test_ckan_ini = os.environ.get('TEST_CKAN_INI', '/srv/app/src/test-core.ini')
 
 RETRY = 5
 
@@ -23,9 +24,9 @@ def update_plugins():
     
 def check_main_db_connection(retry=None):
 
-    conn_str = os.environ.get('CKAN_SQLALCHEMY_URL')
+    conn_str = os.environ.get('DEV_CKAN_SQLALCHEMY_URL')
     if not conn_str:
-        print '[prerun] CKAN_SQLALCHEMY_URL not defined, not checking db'
+        print '[prerun] DEV_CKAN_SQLALCHEMY_URL not defined, not checking db'
     return check_db_connection(conn_str, retry)
 
 
@@ -79,11 +80,10 @@ def check_solr_connection(retry=None):
         eval(connection.read())
 
 
-def init_db():
+def init_db(ini=ckan_ini):
 
-    db_command = ['paster', '--plugin=ckan', 'db',
-                  'init', '-c', ckan_ini]
-    print '[prerun] Initializing or upgrading db - start'
+    db_command = ['paster', '--plugin=ckan', 'db', 'init', '-c', ini]
+    print '[prerun] Initializing or upgrading db - start: {}'.format(ini)
     try:
         subprocess.check_output(db_command, stderr=subprocess.STDOUT)
         print '[prerun] Initializing or upgrading db - end'
@@ -190,6 +190,7 @@ if __name__ == '__main__':
     else:
         check_main_db_connection()
         init_db()
+        init_db(ini=test_ckan_ini)
         update_plugins()
         check_datastore_db_connection()
         init_datastore_db()
