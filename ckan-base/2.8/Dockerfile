@@ -1,17 +1,16 @@
-FROM alpine:3.7
+# FROM alpine:3.7
+FROM kentsang/alpine-geos
 
 # Internals, you probably don't need to change these
 ENV APP_DIR=/srv/app
 ENV SRC_DIR=/srv/app/src
 ENV CKAN_INI=${APP_DIR}/production.ini
+ENV TEST_CKAN_INI=${SRC_DIR}/ckan/test-core.ini
 ENV PIP_SRC=${SRC_DIR}
 ENV CKAN_STORAGE_PATH=/var/lib/ckan
 ENV GIT_URL=https://github.com/ckan/ckan.git
 # CKAN version to build
 ENV GIT_BRANCH=ckan-2.8.3
-# Customize these on the .env file if needed
-ENV CKAN_SITE_URL=http://localhost:5555
-ENV CKAN__PLUGINS image_view text_view recline_view datastore datapusher envvars
 
 WORKDIR ${APP_DIR}
 
@@ -58,8 +57,8 @@ RUN apk add --no-cache tzdata \
     #pip wheel --wheel-dir=/wheels uwsgi gevent && \
     rm -rf ${SRC_DIR}/get-pip.py
 
-RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
-    apk add --update --no-cache geos@testing geos-dev@testing
+# RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
+#     apk add --update --no-cache geos@testing geos-dev@testing
 
 COPY setup/supervisord.conf /etc
 
@@ -84,6 +83,7 @@ RUN mkdir -p $CKAN_STORAGE_PATH && \
     chown -R ckan:ckan $CKAN_STORAGE_PATH
 
 COPY setup ${APP_DIR}
+COPY setup/ckan_harvesting.conf /etc/supervisord.d/ckan_harvesting.conf
 COPY setup/supervisor.worker.conf /etc/supervisord.d/worker.conf
 COPY setup/uwsgi.conf /srv/app/uwsgi.conf
 
@@ -92,8 +92,6 @@ ONBUILD RUN mkdir /docker-entrypoint.d
 
 RUN chown ckan -R /srv/app
 
-EXPOSE 5555
-
-HEALTHCHECK --interval=10s --timeout=5s --retries=5 CMD curl --fail http://localhost:5555/api/3/action/status_show || exit 1
+HEALTHCHECK --interval=10s --timeout=5s --retries=5 CMD curl --fail http://localhost:$CKAN_PORT/api/3/action/status_show || exit 1
 
 CMD ["/srv/app/start_ckan.sh"]
