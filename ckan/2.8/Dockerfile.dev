@@ -2,13 +2,17 @@ FROM alphagov/ckan-dev:2.8
 
 MAINTAINER Your Name Here <you@example.com>
 
+# Set timezone
+RUN cp /usr/share/zoneinfo/UTC /etc/localtime
+RUN echo UTC > /etc/timezone
+
 # Install any extensions needed by your CKAN instance
 # (Make sure to add the plugins to CKAN__PLUGINS in the .env file)
 
 ENV DCAT_SHA=8c55890e7bf9644460ae71470f37abbd9295c9fa
 ENV HARVEST_SHA=5507adc82585a273c51eaebdf7e1d3bbe7d0f9dc
 ENV SPATIAL_SHA=c35e1249cfb3c7b2f1286f433fd51c6fe8f05b72
-ENV DATAGOVUK_VERSION=release_155
+ENV DATAGOVUK_VERSION=release_165
 
 RUN which python && \
     pip install --upgrade setuptools && \

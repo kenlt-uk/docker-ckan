@@ -7,7 +7,6 @@ services:
       context: ckan-postdev/
       dockerfile: 2.7/Dockerfile
       args:
-        - TZ=${TZ}
         # set DISABLE_CRON to 1 to disable harvest & pycsw cronjobs (good idea when running tests)
         - DISABLE_CRON=0
         # set START_CKAN to 1 to start ckan and supervisord, 0 to prevent them from starting
