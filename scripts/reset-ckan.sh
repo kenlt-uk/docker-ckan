@@ -1,34 +1,40 @@
 #!/usr/bin/env bash
 
+if [[ ! -z $3 && $3 == '2.8' ]]; then
+    VERSION=2.8
+else
+    VERSION=2.7
+fi
+
 echo "Docker compose down to remove containers"
-docker-compose -f docker-compose.dev.yml down
+docker-compose -f docker-compose-$VERSION.yml down
 
 function remove_volumes {
     echo "Removing volumes..."
-    ./scripts/reset-volumes.sh
+    ./scripts/reset-volumes.sh $VERSION
 }
 
 function remove_postdev {
     echo "Removing postdev images..."
-    docker images | grep "docker-ckan_ckan-postdev .*" | awk '{print $3}' | xargs docker rmi
+    docker rmi alphagov/ckan-postdev:$VERSION
 }
 
 function remove_ckan {
     remove_postdev
     echo "Removing ckan images..."
-    docker images | grep "alphagov/ckan .*" | awk '{print $3}' | xargs docker rmi
+    docker rmi alphagov/ckan:$VERSION
 }
 
 function remove_ckan_dev {
     remove_ckan
     echo "Removing dev images..."
-    docker images | grep "alphagov/ckan-dev .*" | awk '{print $3}' | xargs docker rmi
+    docker rmi alphagov/ckan-dev:$VERSION
 }
 
 function remove_ckan_base {
     remove_ckan_dev
     echo "Removing base images..."
-    docker images | grep "alphagov/ckan-base .*" | awk '{print $3}' | xargs docker rmi
+    docker rmi alphagov/ckan-base:$VERSION
 }
 
 if [[ ! -z $1 && $1 == 'help' ]]; then

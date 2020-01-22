@@ -1,4 +1,5 @@
-FROM openknowledge/ckan-base:2.8
+# FROM openknowledge/ckan-base:2.8
+FROM alphagov/ckan-base:2.8
 
 MAINTAINER Open Knowledge International <info@okfn.org>
 
@@ -14,7 +15,9 @@ RUN pip install --no-binary :all: -r https://raw.githubusercontent.com/ckan/ckan
 # Create folder for local extensions sources
 RUN mkdir $SRC_EXTENSIONS_DIR
 
+# create folder for logs
+RUN mkdir /var/log/ckan
+
 COPY setup/start_ckan_development.sh ${APP_DIR}
 
-
-CMD ["/srv/app/start_ckan_development.sh"]
+# CMD ["/srv/app/start_ckan_development.sh"]

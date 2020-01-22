@@ -1,0 +1,69 @@
+FROM alphagov/ckan-dev:2.7
+
+MAINTAINER Your Name Here <you@example.com>
+
+# Set timezone
+RUN cp /usr/share/zoneinfo/UTC /etc/localtime
+RUN echo UTC > /etc/timezone
+
+# Install any extensions needed by your CKAN instance
+# (Make sure to add the plugins to CKAN__PLUGINS in the .env file)
+
+ENV DCAT_SHA=8c55890e7bf9644460ae71470f37abbd9295c9fa
+ENV HARVEST_SHA=5507adc82585a273c51eaebdf7e1d3bbe7d0f9dc
+ENV SPATIAL_SHA=c35e1249cfb3c7b2f1286f433fd51c6fe8f05b72
+ENV DATAGOVUK_VERSION=release_165
+
+RUN which python && \
+    pip install --upgrade setuptools && \
+    # install numpy outside of requirements.txt as was complaining of python 3.5 requirement
+    pip install numpy==1.16.4 && \
+    pip install -e git+https://github.com/alphagov/ckanext-dcat.git@$DCAT_SHA#egg=ckanext-dcat && \
+    pip install -r https://raw.githubusercontent.com/alphagov/ckanext-dcat/$DCAT_SHA/requirements.txt && \
+    pip install -e git+https://github.com/alphagov/ckanext-harvest.git@$HARVEST_SHA#egg=ckanext-harvest && \
+    pip install -r https://raw.githubusercontent.com/alphagov/ckanext-harvest/$HARVEST_SHA/pip-requirements.txt && \
+    pip install -e git+https://github.com/alphagov/ckanext-spatial.git@$SPATIAL_SHA#egg=ckanext-spatial && \
+    pip install -r https://raw.githubusercontent.com/alphagov/ckanext-spatial/$SPATIAL_SHA/pip-requirements.txt && \
+    pip install -e git://github.com/alphagov/ckanext-datagovuk.git@$DATAGOVUK_VERSION#egg=ckanext-datagovuk && \
+    pip install -r https://raw.githubusercontent.com/alphagov/ckanext-datagovuk/$DATAGOVUK_VERSION/requirements.txt
+
+# Clone the extension(s) your are writing for your own project in the `src` folder
+# to get them mounted in this image at runtime
+
+COPY docker-entrypoint.d/* /docker-entrypoint.d/
+
+# Apply any patches needed to CKAN core or any of the built extensions (not the
+# runtime mounted ones)
+# See https://github.com/okfn/docker-ckan#applying-patches
+COPY patches ${APP_DIR}/patches
+
+RUN for d in $APP_DIR/patches/*; do \
+        if [ -d $d ]; then \
+            for f in `ls $d/*.patch | sort -g`; do \
+                cd $SRC_DIR/`basename "$d"` && echo "$0: Applying patch $f to $SRC_DIR/`basename $d`"; patch -p1 < "$f" ; \
+            done ; \
+        fi ; \
+    done
+
+# Setup pycsw
+COPY setup/pycsw.cfg $APP_DIR/pycsw.cfg
+COPY setup/pycsw_supervisord.conf /etc/supervisord.d/pycsw_supervisord.conf
+
+ENV PYCSW_CONFIG=$APP_DIR/pycsw.cfg 
+
+WORKDIR $SRC_EXTENSIONS_DIR
+
+RUN git clone --branch 2.4.0 https://github.com/geopython/pycsw.git && \
+    cd pycsw && \
+    pip install -e . && \
+    python setup.py build && \
+    python setup.py install && \
+    chown ckan $APP_DIR/pycsw.cfg && \
+    chmod 644 $APP_DIR/pycsw.cfg && \
+    echo "*/5 * * * * paster --plugin=ckanext-spatial ckan-pycsw load -p $APP_DIR/pycsw.cfg -u http://localhost:5000" > /etc/crontabs/root
+
+# Add cronjob to rebuild the SOLR search index.
+# This is the only way to guarantee that extras_harvest_object_id
+# is available in SOLR otherwise the search query in ckan_pycsw.py will fail.
+# Once the issue to provide the harvest metadata in SOLR is fixed this cronjob can be removed.
+RUN echo "*/5 * * * * paster --plugin=ckan search-index rebuild -r -c $APP_DIR/production.ini" >> /etc/crontabs/root

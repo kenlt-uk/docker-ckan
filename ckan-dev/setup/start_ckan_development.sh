@@ -50,6 +50,9 @@ echo "Loading the following plugins: $CKAN__PLUGINS"
 paster --plugin=ckan config-tool $CKAN_INI \
     "sqlalchemy.url = $DEV_CKAN_SQLALCHEMY_URL" \
     "ckan.site_url = $DEV_CKAN_SITE_URL" \
+    "solr_url = $DEV_CKAN_SOLR_URL" \
+    "ckan.redis.url = $DEV_CKAN_REDIS_URL" \
+    "ckan.site_url = $DEV_CKAN_SITE_URL" \
     "ckan.plugins = $CKAN__PLUGINS"
 
 # Update test-core.ini DB, SOLR & Redis settings

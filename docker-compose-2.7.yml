@@ -1,0 +1,84 @@
+version: "3"
+
+services:
+  ckan-postdev:
+    image: alphagov/ckan-postdev:2.7
+    build:
+      context: ckan-postdev/
+      dockerfile: 2.7/Dockerfile
+      args:
+        # set DISABLE_CRON to 1 to disable harvest & pycsw cronjobs (good idea when running tests)
+        - DISABLE_CRON=0
+        # set START_CKAN to 1 to start ckan and supervisord, 0 to prevent them from starting
+        # stopping ckan and background processes can be useful during development to investigate bugs
+        - START_CKAN=1
+    env_file:
+      - .env-2.7
+    links:
+      - db
+      - solr
+      - redis
+    ports:
+      - "0.0.0.0:3000:3000"
+    volumes:
+      - ./src/2.7:/srv/app/src_extensions
+      - ckan_storage:/var/lib/ckan
+      - ./logs/2.7:/var/log/ckan
+    depends_on: 
+      - db
+      - solr
+      - redis
+    command: bash -c "/srv/app/start_ckan_development.sh"
+    networks:
+      - ckan-2.7
+
+  db:
+    container_name: db
+    env_file:
+      - .env-2.7
+    build:
+      context: postgresql/
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - ckan-2.7
+  
+  solr:
+    container_name: solr
+    build:
+      context: solr/
+    ports:
+      - "8983:8983"
+    volumes:
+      - solr_data:/opt/solr/server/solr/ckan/data/index
+    networks:
+    - ckan-2.7
+  
+  redis:
+    container_name: redis
+    image: redis:alpine
+    networks:
+        - ckan-2.7
+  
+  nginx:
+    container_name: nginx
+    build:
+      context: nginx/
+      dockerfile: 2.7/Dockerfile
+    links:
+      - ckan-postdev
+    ports:
+      - 5000:80
+    volumes:
+      - ./logs/2.7:/var/log/nginx
+    networks:
+      - ckan-2.7
+  
+volumes:
+  ckan_storage:
+  pg_data:
+  solr_data:
+
+networks:
+    ckan-2.7:
+        driver: bridge

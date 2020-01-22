@@ -54,17 +54,21 @@ To develop local extensions use the `docker-compose.dev.yml` file:
 
 To setup your dev environment by cloning ckan and the extensions to your local src directory:
 
-    ./scripts/bootstrap.sh
+    ./scripts/bootstrap.sh <version (2.7, 2.8)>
 
 To build the images:
 
-    ./scripts/rebuild-ckan.sh  # If starting from new, the script will take at least 15 minutes to run.
+    ./scripts/rebuild-ckan.sh <version (2.7, 2.8)> # If starting from new, the script will take at least 15 minutes to run.
 
 To start the containers:
 
-	docker-compose -f docker-compose.dev.yml up
+	./scripts/start-ckan.sh <version (2.7, 2.8)>
 
 See [CKAN Images](#ckan-images) for more details of what happens when using development mode.
+
+Find out names of running containers:
+
+    docker ps
 
 To ssh onto the ckan container:
 
@@ -82,11 +86,9 @@ for help
 
 to pass in args
 
-    ./scripts/reset-ckan.sh <image (postdev, ckan, dev, base)> <reset volumes (Yn)>
+    ./scripts/reset-ckan.sh <image (postdev, ckan, dev, base)> <reset volumes (Yn)> <version (2.7, 2.8)>
 
 ### Running tests for extensions
-
-Run tests in `/srv/app/src_extensions/<ckanext directory>`
 
 #### ckanext-harvest
 
@@ -104,9 +106,14 @@ Run tests in `/srv/app/src_extensions/<ckanext directory>`
 
     nosetests --ckan -v --nologcapture --with-pylons=$SRC_EXTENSIONS_DIR/ckanext-datagovuk/test.ini ckanext.datagovuk
 
+#### ckan
+
+    nosetests --ckan --with-pylons=$SRC_EXTENSIONS_DIR/ckan/test-core.ini ckan
+
 #### target tests 
 
     nosetests ... ckanext.<ckanext extension>.tests.<filename without .py>:<test class name>.<test class method>
+
     `replace ... with the nosetests args`
 
 For example:
@@ -122,15 +129,6 @@ You can use the paster template in much the same way as a source install, only e
 
 The new extension will be created in the `src/` folder. You might need to change the owner of its folder to have the appropiate permissions.
 
-
-### Running the debugger (pdb / ipdb)
-
-To run a container and be able to add a breakpoint with `pdb` or `ipdb`, run the `ckan-dev` container with the `--service-ports` option:
-
-    docker-compose -f docker-compose.dev.yml run --service-ports ckan-dev
-
-This will start a new container, displaying the standard output in your terminal. If you add a breakpoint in a source file in the `src` folder (`import pdb; pdb.set_trace()`) you will be able to inspect it in this terminal next time the code is executed.
-
 ### Logs
 
 All ckan logs are available under `./logs` on your machine.
@@ -143,17 +141,23 @@ Add the following line to the part of the code to set a breakpoint:
 
     import remote_pdb; remote_pdb.set_trace(host='0.0.0.0', port=3000)
 
+Port 3000 is exposed for CKAN 2.7 stack, 3001 is available for CKAN 2.8
+The remote debug port can be found in the docker-compose file and should be unique for each stack.
+
 After a remote pdb session is available, `RemotePdb session open at 0.0.0.0:3000`, then on another terminal connect to the debugger using `telnet`:
 
     telnet localhost 3000
 
-You should now be connected to the debugger to start your investigations
+You should now be connected to the debugger to start your investigations.
 
 ### Accessing ckan publisher and csw endpoint via Nginx
 
 CKAN publisher:
   
-  http://localhost:5000/ 
+  http://localhost:5000/
+
+Port 5000 is available for CKAN 2.7, 5001 is available for CKAN 2.8.
+The nginx port exposed can be found in the docker-compose file.
 
 CSW endpoint:
   
@@ -254,7 +258,5 @@ ckan
 
 
 ## Known Issues
-
-* Running the tests: Running the tests for CKAN or an extension inside the container will delete your current database. We need to patch CKAN core in our image to work around that.
 
 * The SOLR index does not contain harvest metadata which is required by the CSW load job. A work around has been to run a solr reindex cronjob every 5 minutes to ensure that it picks up the latest when a harvest job is run. On production there is a similar cron job running but it only runs once a day.
