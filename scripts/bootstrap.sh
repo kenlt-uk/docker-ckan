@@ -8,6 +8,7 @@ else
     SRC_DIR=2.7
 fi
 
+mkdir -p src/$SRC_DIR
 cd src/$SRC_DIR
 
 git clone --branch ckan-$CKAN_VERSION https://github.com/ckan/ckan
