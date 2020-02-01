@@ -53,8 +53,9 @@ ENV PYCSW_CONFIG=$APP_DIR/pycsw.cfg
 
 WORKDIR $SRC_EXTENSIONS_DIR
 
-RUN git clone  --branch 2.4.0 https://github.com/geopython/pycsw.git && \
+RUN git clone  --branch 2.4.2 --single-branch --depth 1 https://github.com/geopython/pycsw.git && \
     cd pycsw && \
+    git checkout 5db36828941ae8284c0e29568d959d0faf7e192c && \
     pip install -e . && \
     python setup.py build && \
     python setup.py install && \
