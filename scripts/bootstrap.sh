@@ -3,6 +3,9 @@
 if [[ ! -z $1 && $1 == '2.8' ]]; then
     CKAN_VERSION=2.8.3
     SRC_DIR=2.8
+elif [[ ! -z $1 && $1 == 's3' ]]; then
+    CKAN_VERSION=2.7.6
+    SRC_DIR=2.7-s3
 else
     CKAN_VERSION=2.7.6
     SRC_DIR=2.7

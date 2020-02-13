@@ -2,6 +2,8 @@
 
 if [[ ! -z $1 && $1 == '2.8' ]]; then
     VERSION=-2.8
+elif [[ ! -z $1 && $1 == '2.7-s3' ]]; then
+    VERSION=-s3
 fi
 
 docker volume rm docker-ckan_ckan_storage$VERSION

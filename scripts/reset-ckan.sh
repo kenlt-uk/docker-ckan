@@ -2,6 +2,8 @@
 
 if [[ ! -z $3 && $3 == '2.8' ]]; then
     VERSION=2.8
+elif [[ ! -z $3 && $3 == 's3' ]]; then
+    VERSION=2.7-s3
 else
     VERSION=2.7
 fi

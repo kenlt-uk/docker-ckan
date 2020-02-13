@@ -1,0 +1,84 @@
+version: "3"
+
+services:
+  ckan-postdev-s3:
+    image: alphagov/ckan-postdev:2.7-s3
+    build:
+      context: ckan-postdev/
+      dockerfile: 2.7-s3/Dockerfile
+      args:
+        # set DISABLE_CRON to 1 to disable harvest & pycsw cronjobs (good idea when running tests)
+        - DISABLE_CRON=1
+        # set START_CKAN to 1 to start ckan and supervisord, 0 to prevent them from starting
+        # stopping ckan and background processes can be useful during development to investigate bugs
+        - START_CKAN=1
+    env_file:
+      - .env-2.7-s3
+    links:
+      - db-s3:db
+      - solr-s3:solr
+      - redis-s3:redis
+    ports:
+      - "0.0.0.0:3002:3000"
+    volumes:
+      - ./src/2.7-s3:/srv/app/src_extensions
+      - ckan_storage-s3:/var/lib/ckan
+      - ./logs/2.7-s3:/var/log/ckan
+    depends_on: 
+      - db-s3
+      - solr-s3
+      - redis-s3
+    command: bash -c "/srv/app/start_ckan_development.sh"
+    networks:
+      - ckan-2.7-s3
+
+  db-s3:
+    container_name: db-s3
+    env_file:
+      - .env-2.7
+    build:
+      context: postgresql/
+    volumes:
+      - pg_data-s3:/var/lib/postgresql/data
+    networks:
+      - ckan-2.7-s3
+  
+  solr-s3:
+    container_name: solr-s3
+    build:
+      context: solr/
+    ports:
+      - "8985:8983"
+    volumes:
+      - solr_data-s3:/opt/solr/server/solr/ckan/data/index
+    networks:
+    - ckan-2.7-s3
+  
+  redis-s3:
+    container_name: redis-s3
+    image: redis:alpine
+    networks:
+        - ckan-2.7-s3
+  
+  nginx-s3:
+    container_name: nginx-s3
+    build:
+      context: nginx/
+      dockerfile: 2.7-s3/Dockerfile
+    links:
+      - ckan-postdev-s3
+    ports:
+      - 5002:80
+    volumes:
+      - ./logs/2.7-s3:/var/log/nginx
+    networks:
+      - ckan-2.7-s3
+  
+volumes:
+  ckan_storage-s3:
+  pg_data-s3:
+  solr_data-s3:
+
+networks:
+    ckan-2.7-s3:
+        driver: bridge

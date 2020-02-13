@@ -5,4 +5,8 @@ else
     VERSION=2.7
 fi
 
-docker-compose -f docker-compose-$VERSION.yml up
+if [[ ! -z $1 && $1 == 's3' ]]; then
+    docker-compose -f docker-compose-$VERSION-s3.yml up
+else
+    docker-compose -f docker-compose-$VERSION.yml up
+fi
