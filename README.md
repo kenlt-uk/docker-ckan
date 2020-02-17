@@ -88,6 +88,10 @@ to pass in args
 
     ./scripts/reset-ckan.sh <image (postdev, ckan, dev, base)> <reset volumes (Yn)> <version (2.7, 2.8)>
 
+### Updating CKAN configuration, production.ini
+
+When you have to make changes to the CKAN config file, `production.ini`, update the `production.ini` file located in `ckan/setup` project to get a faster turn around time. Changing it on `ckan-base/setup` will increase the turn around time to more than 10 minutes rather than under 5 minutes within the `ckan` project. `production.ini` has been left in `ckan-base` because the Dockerfile in `ckan-base` has references to it.
+
 ### Running tests for extensions
 
 #### ckanext-harvest
