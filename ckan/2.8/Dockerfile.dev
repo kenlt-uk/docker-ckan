@@ -67,3 +67,6 @@ RUN git clone  --branch 2.4.0 https://github.com/geopython/pycsw.git && \
 # is available in SOLR otherwise the search query in ckan_pycsw.py will fail.
 # Once the issue to provide the harvest metadata in SOLR is fixed this cronjob can be removed.
 RUN echo "*/5 * * * * paster --plugin=ckan search-index rebuild -r -c $APP_DIR/production.ini" >> /etc/crontabs/root
+
+# CKAN configuration, modify production.ini in this project to avoid rebuilding ckan-base and ckan-dev projects
+COPY setup/production.ini $APP_DIR/production.ini

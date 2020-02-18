@@ -42,7 +42,7 @@ RUN apk add --no-cache tzdata \
         g++ \
         autoconf \
         automake \
-	libtool \
+        libtool \
         python-dev \
         libxml2-dev \
         libxslt-dev \
@@ -87,7 +87,6 @@ RUN mkdir -p $CKAN_STORAGE_PATH && \
     chown -R ckan:ckan $CKAN_STORAGE_PATH
 
 COPY setup ${APP_DIR}
-COPY setup/production.ini ${APP_DIR}/production.ini
 COPY setup/ckan_harvesting.conf /etc/supervisord.d/ckan_harvesting.conf
 COPY setup/supervisor.worker.conf /etc/supervisord.d/worker.conf
 COPY setup/uwsgi.conf /srv/app/uwsgi.conf
