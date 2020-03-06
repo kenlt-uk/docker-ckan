@@ -40,13 +40,13 @@ Copy the included `.env.example` and rename it to `.env-2.7` (or substitute 2.7 
 
 Using the default values on the `.env.example` file will get you a working CKAN instance. There is a sysadmin user created by default with the values defined in `CKAN_SYSADMIN_NAME` and `CKAN_SYSADMIN_PASSWORD`(`ckan_admin` and `test1234` by default). I shouldn't be telling you this but obviously don't run any public CKAN instance with the default settings.
 
-To build the images:
+To build the images, defaulting to CKAN 2.7:
 
-	docker-compose build
+	./scripts/rebuild-ckan.sh
 
 To start the containers:
 
-	docker-compose up
+	./scripts/start-ckan.sh
 
 ## Development mode
 
