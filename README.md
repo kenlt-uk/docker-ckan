@@ -36,7 +36,7 @@ The site is configured via env vars (the base CKAN image loads [ckanext-envvars]
 
 ## Quick start
 
-Copy the included `.env.example` and rename it to `.env` to modify it depending on your own needs.
+Copy the included `.env.example` and rename it to `.env-2.7` (or substitute 2.7 with 2.8 if working with 2.8) to modify it depending on your own needs.
 
 Using the default values on the `.env.example` file will get you a working CKAN instance. There is a sysadmin user created by default with the values defined in `CKAN_SYSADMIN_NAME` and `CKAN_SYSADMIN_PASSWORD`(`ckan_admin` and `test1234` by default). I shouldn't be telling you this but obviously don't run any public CKAN instance with the default settings.
 
@@ -54,15 +54,15 @@ To develop local extensions use the `docker-compose.dev.yml` file:
 
 To setup your dev environment by cloning ckan and the extensions to your local src directory:
 
-    ./scripts/bootstrap.sh <version (2.7, 2.8)>
+    ./scripts/bootstrap.sh <version (default 2.7, 2.8)>
 
 To build the images:
 
-    ./scripts/rebuild-ckan.sh <version (2.7, 2.8)> # If starting from new, the script will take at least 15 minutes to run.
+    ./scripts/rebuild-ckan.sh <version (default 2.7, 2.8)> # If starting from new, the script will take at least 15 minutes to run.
 
 To start the containers:
 
-	./scripts/start-ckan.sh <version (2.7, 2.8)>
+	./scripts/start-ckan.sh <version (default 2.7, 2.8)>
 
 See [CKAN Images](#ckan-images) for more details of what happens when using development mode.
 
@@ -86,7 +86,7 @@ for help
 
 to pass in args
 
-    ./scripts/reset-ckan.sh <image (postdev, ckan, dev, base)> <reset volumes (Yn)> <version (2.7, 2.8)>
+    ./scripts/reset-ckan.sh <image (postdev, ckan, dev, base)> <reset volumes (Yn)> <version (default 2.7, 2.8)>
 
 ### Updating CKAN configuration, production.ini
 
