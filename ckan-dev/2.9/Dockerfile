@@ -18,12 +18,17 @@ RUN pip install --no-binary :all: -r https://raw.githubusercontent.com/alphagov/
 
 RUN pip install configparser && \
     ckan generate config ${CKAN_INI} && \
-    ckan config-tool ${CKAN_INI} 'ckan.plugins=${CKAN__PLUGINS}' && \
-    ckan config-tool ${CKAN_INI} 'ckan.site_url=${CKAN__SITE_URL}' && \
+    ckan config-tool ${CKAN_INI} "ckan.plugins=${CKAN__PLUGINS}" && \
+    ckan config-tool ${CKAN_INI} "ckan.site_url=${CKAN__SITE_URL}" 
+
     # Upgrade pylons version as the bundled version specified in requirements-py2.txt does not work
-    pip install Pylons==1.0.3 && \
+RUN pip install Pylons==1.0.3 && \
     # webob version installed is not high enough as lacks some dependencies
-    pip install webob==1.8.6
+    pip install webob==1.8.6 && \
+    # cryptography 2.9 is broken with this error message
+    # ImportError: Error relocating /usr/lib/python2.7/site-packages/cryptography/hazmat/bindings/_openssl.so: RSA_get0_crt_params: symbol not found
+    # so set to cryptography 2.8
+    pip install cryptography==2.8
 
 # Create folder for local extensions sources
 RUN mkdir $SRC_EXTENSIONS_DIR
