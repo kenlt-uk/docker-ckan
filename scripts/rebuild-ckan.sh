@@ -3,6 +3,9 @@
 if [[ ! -z $1 && $1 == '2.8' ]]; then
     echo "=== Building CKAN 2.8 ==="
     VERSION=2.8
+elif [[ ! -z $1 && $1 == '2.9' ]]; then
+    echo "=== Building CKAN 2.9 ==="
+    VERSION=2.9
 else
     echo "=== Building CKAN 2.7 ==="
     VERSION=2.7
@@ -13,4 +16,4 @@ fi
 (cd ckan && docker build -t alphagov/ckan:$VERSION -f $VERSION/Dockerfile.dev .)
 (cd ckan-postdev && docker build -t alphagov/ckan-postdev:$VERSION -f $VERSION/Dockerfile .)
 
-docker-compose -f docker-compose-$VERSION.yml build 
+docker-compose -f docker-compose-$VERSION.yml build
