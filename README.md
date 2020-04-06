@@ -36,7 +36,9 @@ The site is configured via env vars (the base CKAN image loads [ckanext-envvars]
 
 ## Quick start
 
-Copy the included `.env.example` and rename it to `.env-2.7` (or substitute 2.7 with 2.8 if working with 2.8) to modify it depending on your own needs.
+Available CKAN stacks: 2.7 (default), 2.8 and 2.9
+
+Copy the included `.env.example` and rename it to `.env-2.7` (or substitute 2.7 with 2.8/2.9) to modify it depending on your own needs.
 
 Using the default values on the `.env.example` file will get you a working CKAN instance. There is a sysadmin user created by default with the values defined in `CKAN_SYSADMIN_NAME` and `CKAN_SYSADMIN_PASSWORD`(`ckan_admin` and `test1234` by default). I shouldn't be telling you this but obviously don't run any public CKAN instance with the default settings.
 
@@ -58,15 +60,15 @@ To develop local extensions use the `docker-compose.dev.yml` file:
 
 To setup your dev environment by cloning ckan and the extensions to your local src directory:
 
-    ./scripts/bootstrap.sh <version (default 2.7, 2.8)>
+    ./scripts/bootstrap.sh <version (default 2.7, 2.8, 2.9)>
 
 To build the images:
 
-    ./scripts/rebuild-ckan.sh <version (default 2.7, 2.8)> # If starting from new, the script will take at least 15 minutes to run.
+    ./scripts/rebuild-ckan.sh <version (default 2.7, 2.8, 2.9)> # If starting from new, the script will take at least 15 minutes to run.
 
 To start the containers:
 
-	./scripts/start-ckan.sh <version (default 2.7, 2.8)>
+	./scripts/start-ckan.sh <version (default 2.7, 2.8, 2.9)>
 
 See [CKAN Images](#ckan-images) for more details of what happens when using development mode.
 
@@ -101,6 +103,14 @@ When you have to make changes to the CKAN config file, `production.ini`, update 
 #### ckanext-harvest
 
     nosetests --ckan  --nologcapture --with-pylons=$SRC_EXTENSIONS_DIR/ckanext-harvest/test-core.ini ckanext.harvest
+
+##### NOTE - updating gather or fetch processes
+
+For the code to be picked up by supervisorctl, the process needs to be restarted 
+
+    supervisorctl restart ckan_fetch_consumer
+
+    supervisorctl restart ckan_gather_consumer
 
 #### ckanext-spatial
 
@@ -149,12 +159,14 @@ Add the following line to the part of the code to set a breakpoint:
 
     import remote_pdb; remote_pdb.set_trace(host='0.0.0.0', port=3000)
 
-Port 3000 is exposed for CKAN 2.7 stack, 3001 is available for CKAN 2.8
+Port 3000 is exposed for CKAN 2.7 stack, 3001 for 2.8, 3002 for 2.9
 The remote debug port can be found in the docker-compose file and should be unique for each stack.
 
 After a remote pdb session is available, `RemotePdb session open at 0.0.0.0:3000`, then on another terminal connect to the debugger using `telnet`:
 
     telnet localhost 3000
+
+NOTE - update the telnet port depending on the CKAN version you are running.
 
 You should now be connected to the debugger to start your investigations.
 
@@ -164,7 +176,7 @@ CKAN publisher:
   
   http://localhost:5000/
 
-Port 5000 is available for CKAN 2.7, 5001 is available for CKAN 2.8.
+Port 5000 is available for CKAN 2.7, 5001 for 2.8, 5002 for 2.9.
 The nginx port exposed can be found in the docker-compose file.
 
 CSW endpoint:
@@ -174,6 +186,8 @@ CSW endpoint:
 CSW summary:
 
   http://localhost:5000/csw?service=CSW&version=2.0.2&request=GetRecords&typenames=csw:Record&elementsetname=brief
+
+NOTE - update 5000 with the relevant port for the CKAN version you are running
 
 ## CKAN images
 

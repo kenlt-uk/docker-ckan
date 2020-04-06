@@ -1,11 +1,6 @@
-FROM alphagov/ckan:latest
+FROM alphagov/ckan:2.9
 
-MAINTAINER Data Gov UK <team@data.gov.uk>
-
-# Set timezone
-ARG TZ
-RUN cp /usr/share/zoneinfo/$TZ /etc/localtime
-RUN echo $TZ > /etc/timezone
+MAINTAINER Data Gov UK <team@data.gov.uk >
 
 RUN pip install remote-pdb
 
