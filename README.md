@@ -37,7 +37,7 @@ The site is configured via env vars (the base CKAN image loads [ckanext-envvars]
 
 Available CKAN stacks: 2.7 (default), 2.8 and 2.9
 
-Copy the included `.env.example` and rename it to `.env-2.7` (or substitute 2.7 with 2.8/2.9) to modify it depending on your own needs and update `DEV_CKAN_SITE_URL` and `CKAN_PORT` to port `5001` for 2.8 and `5002` for 2.9.
+Copy the included `.env.example` and rename it to `.env-2.7` (or substitute 2.7 with 2.8/2.9) to modify it depending on your own needs and update `DEV_CKAN_SITE_URL` and `CKAN_PORT` to port `5001` for 2.8 or `5002` for 2.9.
 
 Using the default values on the `.env.example` file will get you a working CKAN instance. There is a sysadmin user created by default with the values defined in `CKAN_SYSADMIN_NAME` and `CKAN_SYSADMIN_PASSWORD`(`ckan_admin` and `test1234` by default). I shouldn't be telling you this but obviously don't run any public CKAN instance with the default settings.
 
