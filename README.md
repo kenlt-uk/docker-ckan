@@ -60,15 +60,15 @@ To develop local extensions use the `docker-compose.dev.yml` file:
 
 To setup your dev environment by cloning ckan and the extensions to your local src directory:
 
-    ./scripts/bootstrap.sh <version (default 2.7, 2.8, 2.9)>
+    ./scripts/bootstrap.sh <version> # eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used
 
 To build the images:
 
-    ./scripts/rebuild-ckan.sh <version (default 2.7, 2.8, 2.9)> # If starting from new, the script will take at least 15 minutes to run.
+    ./scripts/rebuild-ckan.sh <version> #  eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used. If starting from new, the script will take at least 15 minutes to run.
 
 To start the containers:
 
-	./scripts/start-ckan.sh <version (default 2.7, 2.8, 2.9)>
+	./scripts/start-ckan.sh <version>  eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used
 
 See [CKAN Images](#ckan-images) for more details of what happens when using development mode.
 
@@ -106,7 +106,7 @@ When you have to make changes to the CKAN config file, `production.ini`, update 
 
 ##### NOTE - updating gather or fetch processes
 
-For the code to be picked up by supervisorctl, the process needs to be restarted 
+For the code to be picked up by supervisorctl, the process needs to be restarted
 
     supervisorctl restart ckan_fetch_consumer
 
@@ -128,7 +128,7 @@ For the code to be picked up by supervisorctl, the process needs to be restarted
 
     nosetests --ckan --with-pylons=$SRC_EXTENSIONS_DIR/ckan/test-core.ini ckan
 
-#### target tests 
+#### target tests
 
     nosetests ... ckanext.<ckanext extension>.tests.<filename without .py>:<test class name>.<test class method>
 
@@ -173,14 +173,14 @@ You should now be connected to the debugger to start your investigations.
 ### Accessing ckan publisher and csw endpoint via Nginx
 
 CKAN publisher:
-  
+
   http://localhost:5000/
 
 Port 5000 is available for CKAN 2.7, 5001 for 2.8, 5002 for 2.9.
 The nginx port exposed can be found in the docker-compose file.
 
 CSW endpoint:
-  
+
   http://locahost:5000/csw
 
 CSW summary:
@@ -257,7 +257,7 @@ COPY docker-entrypoint.d/* /docker-entrypoint.d/
 
 ### Applying patches
 
-When building your project specific CKAN images (the ones defined in the `ckan/` folder), you can apply patches 
+When building your project specific CKAN images (the ones defined in the `ckan/` folder), you can apply patches
 to CKAN core or any of the built extensions. To do so create a folder inside `ckan/patches` with the name of the
 package to patch (ie `ckan` or `ckanext-??`). Inside you can place patch files that will be applied when building
 the images. The patches will be applied in alphabetical order, so you can prefix them sequentially if necessary.
