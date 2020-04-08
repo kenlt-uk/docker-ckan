@@ -7,7 +7,6 @@
 * [Quick start](#quick-start)
 * [Development mode](#development-mode)
    * [Create an extension](#create-an-extension)
-   * [Running the debugger (pdb / ipdb)](#running-the-debugger-pdb--ipdb)
 * [CKAN images](#ckan-images)
    * [Extending the base images](#extending-the-base-images)
    * [Applying patches](#applying-patches)
