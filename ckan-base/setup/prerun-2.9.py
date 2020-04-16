@@ -30,14 +30,6 @@ def check_main_db_connection(retry=None):
     return check_db_connection(conn_str, retry)
 
 
-def check_datastore_db_connection(retry=None):
-
-    conn_str = os.environ.get('CKAN_DATASTORE_WRITE_URL')
-    if not conn_str:
-        print '[prerun] CKAN_DATASTORE_WRITE_URL not defined, not checking db'
-    return check_db_connection(conn_str, retry)
-
-
 def check_db_connection(conn_str, retry=None):
 
     if retry is None:
@@ -107,7 +99,7 @@ def create_sysadmin():
     if name and password and email:
 
         # Check if user exists
-        command = ['ckan', '-c', ckan_ini, 'user', name]
+        command = ['ckan', '-c', ckan_ini, 'user', 'show', name]
 
         out = subprocess.check_output(command)
         if 'User:None' not in re.sub(r'\s', '', out):
@@ -148,6 +140,5 @@ if __name__ == '__main__':
         init_db()
         init_db(ini=test_ckan_ini)
         update_plugins()
-        check_datastore_db_connection()
         check_solr_connection()
         create_sysadmin()

@@ -69,4 +69,4 @@ RUN git clone  --branch 2.4.0 https://github.com/geopython/pycsw.git && \
 RUN echo "*/5 * * * * paster --plugin=ckan search-index rebuild -r -c $APP_DIR/production.ini" >> /etc/crontabs/root
 
 # CKAN configuration, modify production.ini in this project to avoid rebuilding ckan-base and ckan-dev projects
-COPY setup/production.ini $APP_DIR/production.ini
+COPY setup/production-2.9.ini $APP_DIR/production.ini
