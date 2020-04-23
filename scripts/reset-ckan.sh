@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-if [[ ! -z $3 && $3 == '2.8' ]]; then
+NS=alphagov
+if [[ ! -z $3 && $3 == '2.7-dh' ]]; then
+    VERSION=2.7
+    NS=kentsang
+elif [[ ! -z $3 && $3 == '2.8' ]]; then
     VERSION=2.8
 elif [[ ! -z $3 && $3 == '2.9' ]]; then
     VERSION=2.9
@@ -18,29 +22,29 @@ function remove_volumes {
 
 function remove_postdev {
     echo "Removing postdev images..."
-    docker rmi alphagov/ckan-postdev:$VERSION
+    docker rmi $NS/ckan-postdev:$VERSION
 }
 
 function remove_ckan {
     remove_postdev
     echo "Removing ckan images..."
-    docker rmi alphagov/ckan:$VERSION
+    docker rmi $NS/ckan:$VERSION
 }
 
 function remove_ckan_dev {
     remove_ckan
     echo "Removing dev images..."
-    docker rmi alphagov/ckan-dev:$VERSION
+    docker rmi $NS/ckan-dev:$VERSION
 }
 
 function remove_ckan_base {
     remove_ckan_dev
     echo "Removing base images..."
-    docker rmi alphagov/ckan-base:$VERSION
+    docker rmi $NS/ckan-base:$VERSION
 }
 
 if [[ ! -z $1 && $1 == 'help' ]]; then
-    echo "Usage: ./scripts/reset-ckan.sh <images from (postdev, ckan, dev, base)> <remove volumes (Yn)> "
+    echo "Usage: ./scripts/reset-ckan.sh <images from (postdev, ckan, dev, base)> <remove volumes (Yn)> <version (2.7, 2.8, 2.9, dh)>"
 else
 
     while True; do
