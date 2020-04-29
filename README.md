@@ -97,6 +97,36 @@ to pass in args
 
 When you have to make changes to the CKAN config file, `production.ini`, update the `production.ini` file located in `ckan/setup` project to get a faster turn around time. Changing it on `ckan-base/setup` will increase the turn around time to more than 10 minutes rather than under 5 minutes within the `ckan` project. `production.ini` has been left in `ckan-base` because the Dockerfile in `ckan-base` has references to it.
 
+### Useful tips during development
+
+#### Problems logging in
+
+If you cannot log in with the credentials in your `.env` file, it's possible that the CKAN auth session has been corrupted, perhaps due to restarting the stack. As there may be a number of reasons why it is failing, you can try these to resolve it:
+
+- clear all the application cookies from the browser
+- recreate the admin user in the container - `paster --plugin=ckan sysadmin add admin email=admin@localhost name=admin -c $CKAN_INI`
+
+#### Docker container is not staying up
+
+If the CKAN container is unable to stay healthy, it's possible that there has been a code change in your CKAN or extension code, so move the targeted source folder, e.g `src/2.7` to `src/2.7.bak`, if you want to still see your changes, or delete the folder. Then run `./scripts/bootstrap.sh` to download all the repositories again and start fresh.
+
+If the problem persists even after running a `./scripts/reset-ckan.sh`, it may be possible that there is an issue with the docker images / containers. In this case it's best to clear docker images and volumes down entirely. These commands will enable you to do that, note that they will remove images and volumes so only use this as a last resort.
+
+    docker volume rm $(docker volume ls --filter dangling=true -q)
+    docker rmi -f $(docker images --filter dangling=true -qa)
+    docker stop $(docker ps -aq)
+    docker rm $(docker ps -aq)
+    docker network prune -f
+    docker rmi -f $(docker images --filter dangling=true -qa)
+
+#### Manually running a harvest job
+
+In order to run a harvest job manually, you need to run these commands on the container - 
+
+    paster --plugin=ckanext-harvest harvester run_test test-harvest-source-name -c $CKAN_INI
+
+The `test-harvest-source-name` can be derived from the URL after creating a harvest source.
+
 ### Running tests for extensions
 
 #### ckanext-harvest
