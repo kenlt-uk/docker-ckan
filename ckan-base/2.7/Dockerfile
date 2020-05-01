@@ -1,5 +1,5 @@
 # FROM alpine:3.7
-FROM kentsang/alpine-geos
+FROM govuk/alpine-geos
 
 # Internals, you probably don't need to change these
 ENV APP_DIR=/srv/app

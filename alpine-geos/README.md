@@ -1,7 +1,5 @@
-## Packaging kentsang/alpine-geos
+## Packaging govuk/alpine-geos
 
-docker save kentsang/alpine-geos:latest > image.tar
-
+docker save govuk/alpine-geos:latest > image.tar
 docker load < image.tar
-
-docker push kentsang/alpine-geos:latest 
+docker push govuk/alpine-geos:latest 
