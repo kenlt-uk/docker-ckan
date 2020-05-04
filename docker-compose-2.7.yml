@@ -2,7 +2,7 @@ version: "3"
 
 services:
   ckan-postdev:
-    image: alphagov/ckan-postdev:2.7
+    image: govuk/ckan-postdev:2.7
     build:
       context: ckan-postdev/
       dockerfile: 2.7/Dockerfile

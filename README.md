@@ -45,7 +45,7 @@ To clone ckan and ckan extensions:
 
 	./scripts/bootstrap.sh
 
-To build the images, defaulting to CKAN 2.7:
+To build the images, defaulting to CKAN 2.7, pulling down govuk/ckan-main and building only the postdev container:
 
 	./scripts/rebuild-ckan.sh
 
@@ -63,7 +63,7 @@ To setup your dev environment by cloning ckan and the extensions to your local s
 
 To build the images:
 
-    ./scripts/rebuild-ckan.sh <version> #  eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used. If starting from new, the script will take at least 15 minutes to run.
+    ./scripts/rebuild-ckan.sh <version> <optional all>#  eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used. If starting from new, the script will take at least 20 minutes to run. If `all` is passed as an argument all the docker project will be rebuilt, otherwise the docker image from dockerhub for ckan-main will be pulled and only postdev will be built.
 
 To start the containers:
 
@@ -91,11 +91,11 @@ for help
 
 to pass in args
 
-    ./scripts/reset-ckan.sh <image (postdev, ckan, dev, base)> <reset volumes (Yn)> <version (default 2.7, 2.8)>
+    ./scripts/reset-ckan.sh <image (postdev, main, dev, base)> <reset volumes (Yn)> <version (default 2.7, 2.8)>
 
 ### Updating CKAN configuration, production.ini
 
-When you have to make changes to the CKAN config file, `production.ini`, update the `production.ini` file located in `ckan/setup` project to get a faster turn around time. Changing it on `ckan-base/setup` will increase the turn around time to more than 10 minutes rather than under 5 minutes within the `ckan` project. `production.ini` has been left in `ckan-base` because the Dockerfile in `ckan-base` has references to it.
+When you have to make changes to the CKAN config file, `production.ini`, update the `production.ini` file located in `ckan-main/setup` project to get a faster turn around time. Changing it on `ckan-base/setup` will increase the turn around time to more than 10 minutes rather than under 5 minutes within the `ckan-main` project. `production.ini` has been left in `ckan-base` because the Dockerfile in `ckan-base` has references to it.
 
 ### Useful tips during development
 
@@ -237,7 +237,7 @@ NOTE - update 5000 with the relevant port for the CKAN version you are running
 
 ```
 
-The Docker images used to build your CKAN project are located in the `ckan/` folder. There are two Docker files:
+The Docker images used to build your CKAN project are located in the `ckan-main/` folder. There are two Docker files:
 
 * `Dockerfile`: this is based on `openknowledge/ckan-base` (with the `Dockerfile` on the `/ckan-base/<version>` folder), an image with CKAN with all its dependencies, properly configured and running on [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/) (production setup)
 * `Dockerfile.dev`: this is based on `openknowledge/ckan-dev` (with the `Dockerfile` on the `/ckan-dev/<version>` folder), which extends `openknowledge/ckan-base` to include:
@@ -286,8 +286,8 @@ COPY docker-entrypoint.d/* /docker-entrypoint.d/
 
 ### Applying patches
 
-When building your project specific CKAN images (the ones defined in the `ckan/` folder), you can apply patches
-to CKAN core or any of the built extensions. To do so create a folder inside `ckan/patches` with the name of the
+When building your project specific CKAN images (the ones defined in the `ckan-main/` folder), you can apply patches
+to CKAN core or any of the built extensions. To do so create a folder inside `ckan-main/patches` with the name of the
 package to patch (ie `ckan` or `ckanext-??`). Inside you can place patch files that will be applied when building
 the images. The patches will be applied in alphabetical order, so you can prefix them sequentially if necessary.
 

@@ -1,4 +1,4 @@
-FROM alphagov/ckan:2.8
+FROM govuk/ckan-main:2.8
 
 MAINTAINER Data Gov UK <team@data.gov.uk >
 

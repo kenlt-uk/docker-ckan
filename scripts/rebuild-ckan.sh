@@ -11,9 +11,22 @@ else
     VERSION=2.7
 fi
 
-(cd ckan-base && docker build -t alphagov/ckan-base:$VERSION -f $VERSION/Dockerfile .)
-(cd ckan-dev && docker build -t alphagov/ckan-dev:$VERSION -f $VERSION/Dockerfile .)
-(cd ckan && docker build -t alphagov/ckan:$VERSION -f $VERSION/Dockerfile.dev .)
-(cd ckan-postdev && docker build -t alphagov/ckan-postdev:$VERSION -f $VERSION/Dockerfile .)
+if [[ ! -z $2 && $2 == 'all' ]]; then
+    echo "=== Building all projects"
+    BUILD=all
+else
+    echo "=== Building postdev only"
+    BUILD=postdev
+fi
+
+if [[ $BUILD == 'all' ]]; then
+
+    (cd ckan-base && docker build -t govuk/ckan-base:$VERSION -f $VERSION/Dockerfile .)
+    (cd ckan-dev && docker build -t govuk/ckan-dev:$VERSION -f $VERSION/Dockerfile .)
+    (cd ckan-main && docker build -t govuk/ckan-main:$VERSION -f $VERSION/Dockerfile.dev .)
+
+fi
+
+(cd ckan-postdev && docker build -t govuk/ckan-postdev:$VERSION -f $VERSION/Dockerfile .)
 
 docker-compose -f docker-compose-$VERSION.yml build

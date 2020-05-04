@@ -1,4 +1,4 @@
-FROM alphagov/ckan-base:2.9
+FROM govuk/ckan-base:2.9
 
 MAINTAINER Open Knowledge International <info@okfn.org>
 

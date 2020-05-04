@@ -1,5 +1,5 @@
 # FROM openknowledge/ckan-base:2.8
-FROM alphagov/ckan-base:2.8
+FROM govuk/ckan-base:2.8
 
 MAINTAINER Open Knowledge International <info@okfn.org>
 

@@ -18,42 +18,42 @@ function remove_volumes {
 
 function remove_postdev {
     echo "Removing postdev images..."
-    docker rmi alphagov/ckan-postdev:$VERSION
+    docker rmi govuk/ckan-postdev:$VERSION
 }
 
-function remove_ckan {
+function remove_main {
     remove_postdev
     echo "Removing ckan images..."
-    docker rmi alphagov/ckan:$VERSION
+    docker rmi govuk/ckan-main:$VERSION
 }
 
 function remove_ckan_dev {
-    remove_ckan
+    remove_main
     echo "Removing dev images..."
-    docker rmi alphagov/ckan-dev:$VERSION
+    docker rmi govuk/ckan-dev:$VERSION
 }
 
 function remove_ckan_base {
     remove_ckan_dev
     echo "Removing base images..."
-    docker rmi alphagov/ckan-base:$VERSION
+    docker rmi govuk/ckan-base:$VERSION
 }
 
 if [[ ! -z $1 && $1 == 'help' ]]; then
-    echo "Usage: ./scripts/reset-ckan.sh <images from (postdev, ckan, dev, base)> <remove volumes (Yn)> "
+    echo "Usage: ./scripts/reset-ckan.sh <images from (postdev, main, dev, base)> <remove volumes (Yn)> "
 else
 
     while True; do
         remove=$1
         if [[ -z $remove ]]; then
-            read -p "remove images (postdev, ckan, dev, base): " remove
+            read -p "remove images (postdev, main, dev, base): " remove
         fi
 
         if [[ $remove == "postdev" ]]; then
             remove_postdev
             break
-        elif [[ $remove == "ckan" ]]; then
-            remove_ckan
+        elif [[ $remove == "main" ]]; then
+            remove_main
             break
         elif [[ $remove == "dev" ]]; then
             remove_ckan_dev

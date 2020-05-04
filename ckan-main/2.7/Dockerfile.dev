@@ -1,16 +1,18 @@
-# FROM openknowledge/ckan-dev:2.8
-FROM alphagov/ckan-dev:2.7
+FROM govuk/ckan-dev:2.7
 
 MAINTAINER Your Name Here <you@example.com>
+
+# Set timezone
+RUN cp /usr/share/zoneinfo/UTC /etc/localtime
+RUN echo UTC > /etc/timezone
 
 # Install any extensions needed by your CKAN instance
 # (Make sure to add the plugins to CKAN__PLUGINS in the .env file)
 
 ENV DCAT_SHA=8c55890e7bf9644460ae71470f37abbd9295c9fa
-ENV HARVEST_SHA=5507adc82585a273c51eaebdf7e1d3bbe7d0f9dc
+ENV HARVEST_SHA=73db5f1ee67fc86521cfd1861b5d699ff45b1e33
 ENV SPATIAL_SHA=c35e1249cfb3c7b2f1286f433fd51c6fe8f05b72
-ENV S3_SHA=81eb36fb51da5e216e9405a7ad64c4096881ca85
-ENV DATAGOVUK_VERSION=release_155
+ENV DATAGOVUK_VERSION=release_165
 
 RUN which python && \
     pip install --upgrade setuptools && \
@@ -22,8 +24,6 @@ RUN which python && \
     pip install -r https://raw.githubusercontent.com/alphagov/ckanext-harvest/$HARVEST_SHA/pip-requirements.txt && \
     pip install -e git+https://github.com/alphagov/ckanext-spatial.git@$SPATIAL_SHA#egg=ckanext-spatial && \
     pip install -r https://raw.githubusercontent.com/alphagov/ckanext-spatial/$SPATIAL_SHA/pip-requirements.txt && \
-    pip install -e git+https://github.com/alphagov/ckanext-s3-resources.git@$S3_SHA#egg=ckanext-s3-resources && \
-    pip install -r https://raw.githubusercontent.com/alphagov/ckanext-s3-resources/$S3_SHA/requirements.txt && \
     pip install -e git://github.com/alphagov/ckanext-datagovuk.git@$DATAGOVUK_VERSION#egg=ckanext-datagovuk && \
     pip install -r https://raw.githubusercontent.com/alphagov/ckanext-datagovuk/$DATAGOVUK_VERSION/requirements.txt
 
@@ -53,7 +53,7 @@ ENV PYCSW_CONFIG=$APP_DIR/pycsw.cfg
 
 WORKDIR $SRC_EXTENSIONS_DIR
 
-RUN git clone  --branch 2.4.0 https://github.com/geopython/pycsw.git && \
+RUN git clone --branch 2.4.0 https://github.com/geopython/pycsw.git && \
     cd pycsw && \
     pip install -e . && \
     python setup.py build && \
@@ -67,3 +67,6 @@ RUN git clone  --branch 2.4.0 https://github.com/geopython/pycsw.git && \
 # is available in SOLR otherwise the search query in ckan_pycsw.py will fail.
 # Once the issue to provide the harvest metadata in SOLR is fixed this cronjob can be removed.
 RUN echo "*/5 * * * * paster --plugin=ckan search-index rebuild -r -c $APP_DIR/production.ini" >> /etc/crontabs/root
+
+# CKAN configuration, modify production.ini in this project to avoid rebuilding ckan-base and ckan-dev projects
+COPY setup/production.ini $APP_DIR/production.ini
