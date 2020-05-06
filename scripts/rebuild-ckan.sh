@@ -14,15 +14,20 @@ fi
 if [[ ! -z $2 && $2 == 'all' ]]; then
     echo "=== Building all projects"
     BUILD=all
+elif [[ ! -z $2 && $2 == 'main' ]]; then
+    echo "=== Building main and postdev"
+    BUILD=main
 else
     echo "=== Building postdev only"
     BUILD=postdev
 fi
 
-if [[ $BUILD == 'all' ]]; then
+if [[ $BUILD == 'all' || $BUILD == 'main' ]]; then
 
-    (cd ckan-base && docker build -t govuk/ckan-base:$VERSION -f $VERSION/Dockerfile .)
-    (cd ckan-dev && docker build -t govuk/ckan-dev:$VERSION -f $VERSION/Dockerfile .)
+    if [[ $BUILD == 'all' ]]; then
+        (cd ckan-base && docker build -t govuk/ckan-base:$VERSION -f $VERSION/Dockerfile .)
+        (cd ckan-dev && docker build -t govuk/ckan-dev:$VERSION -f $VERSION/Dockerfile .)
+    fi
     (cd ckan-main && docker build -t govuk/ckan-main:$VERSION -f $VERSION/Dockerfile.dev .)
 
 fi
