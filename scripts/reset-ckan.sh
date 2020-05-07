@@ -63,6 +63,7 @@ else
             break
         else 
             echo "$remove not recognised"
+            break
         fi
     done
 
