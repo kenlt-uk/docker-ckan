@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+  elasticsearch-2.9:
+    container_name: elasticsearch-2.9
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.9
+    environment:
+      - node.name=elasticsearch
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es_data-2.9:/usr/share/elasticsearch/data
+    ports:
+      - 9202:9200
+    networks:
+      - ckan-2.9
+
+  publish-2.9:
+    image: govuk/publish:2.9
+    container_name: publish-2.9
+    build:
+      context: ./src/2.9/datagovuk_publish/
+    env_file:
+      - .env-2.9
+    links:
+      - db-2.9:db
+      - elasticsearch-2.9:elasticsearch
+      - redis-2.9:redis
+      - ckan-postdev-2.9:ckan-postdev
+    depends_on: 
+      - db-2.9
+      - elasticsearch-2.9
+      - redis-2.9
+    command: bash -c "./bin/setup-docker.sh"
+    volumes:
+      - ./src/2.9/datagovuk_publish:/srv/app/datagovuk_publish
+      - ./logs/2.9:/var/log/sidekiq
+    networks:
+      - ckan-2.9
+
+volumes:
+  es_data-2.9:
+
+networks:
+    ckan-2.9:
+        driver: bridge
