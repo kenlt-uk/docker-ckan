@@ -4,7 +4,8 @@
 CKAN_FORK=ckan
 
 if [[ ! -z $1 && $1 == '2.8' ]]; then
-    CKAN_VERSION=2.8.3
+    CKAN_VERSION=2.8.3-dgu
+    CKAN_FORK=alphagov
     SRC_DIR=2.8
 elif [[ ! -z $1 && $1 == '2.9' ]]; then
     CKAN_VERSION=2.9-dgu
