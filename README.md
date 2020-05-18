@@ -131,7 +131,7 @@ The `test-harvest-source-name` can be derived from the URL after creating a harv
 
 #### ckanext-harvest
 
-    nosetests --ckan  --nologcapture --with-pylons=$SRC_EXTENSIONS_DIR/ckanext-harvest/test-core.ini ckanext.harvest
+    nosetests --ckan  --nologcapture --with-pylons=$SRC_EXTENSIONS_DIR/ckanext-harvest/test-nose.ini ckanext.harvest
 
 ##### NOTE - updating gather or fetch processes
 
