@@ -6,7 +6,9 @@ echo "Extension dir contents:"
 ls -la $SRC_EXTENSIONS_DIR
 for i in $SRC_EXTENSIONS_DIR/*
 do
-    if [ -d $i ];
+    if [ -d $i ] && (
+        [ -z "$DEV_EXTENSIONS_WHITELIST" ] || [[ ",$DEV_EXTENSIONS_WHITELIST," =~ ",$(basename $i)," ]]
+    );
     then
 
         if [ -f $i/pip-requirements.txt ];
