@@ -127,6 +127,16 @@ In order to run a harvest job manually, you need to run these commands on the co
 
 The `test-harvest-source-name` can be derived from the URL after creating a harvest source.
 
+#### Database / Redis / Solr is not found during tests
+
+If you have checked out a branch of CKAN or one of the extensions its possible that the config settings have been reset when pulling down the commits if you do this whilst the docker stack is still running.
+
+You can initialise the CKAN config by running this command -
+
+    /srv/app/init_config.sh
+
+For extensions run the relevant `setup` file found in `/docker-entrypoint.d`, e.g. if you changed the harvest branch run `/docker-entrypoint.d/setup_harvest.sh`
+
 ### Running tests for extensions
 
 #### ckanext-harvest
