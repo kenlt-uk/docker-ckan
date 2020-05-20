@@ -28,6 +28,7 @@ services:
       - db-2.8
       - solr-2.8
       - redis-2.8
+      - static-mock-harvest-source-2.8
     command: bash -c "/srv/app/start_ckan_development.sh"
     networks:
       - ckan-2.8
@@ -73,7 +74,19 @@ services:
       - ./logs/2.8:/var/log/nginx
     networks:
       - ckan-2.8
-  
+
+  static-mock-harvest-source-2.8:
+    container_name: static-mock-harvest-source-2.8
+    build:
+      context: ./src/2.8/ckan-mock-harvest-sources/static/
+    ports:
+      - "11088:11088"
+    volumes:
+      - ./src/2.8/ckan-mock-harvest-sources/static/responses:/srv/responses
+      - ./src/2.8/ckan-mock-harvest-sources/static/mock-third-party:/src/mock-third-party
+    networks:
+      - ckan-2.8
+
 volumes:
   ckan_storage-2.8:
   pg_data-2.8:

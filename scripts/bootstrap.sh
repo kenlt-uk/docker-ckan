@@ -17,8 +17,7 @@ else
 fi
 
 mkdir -p src/$SRC_DIR
-cd src/$SRC_DIR
-
+pushd src/$SRC_DIR
 git clone --branch ckan-$CKAN_VERSION https://github.com/$CKAN_FORK/ckan
 
 git clone https://github.com/alphagov/ckanext-datagovuk
@@ -26,3 +25,8 @@ git clone https://github.com/alphagov/ckanext-harvest
 git clone --branch dgu-fixes https://github.com/alphagov/ckanext-spatial
 git clone https://github.com/ckan/ckanext-dcat
 git clone https://github.com/geopython/pycsw.git --branch 2.4.0 
+
+git clone https://github.com/alphagov/ckan-mock-harvest-sources.git
+# appending this should quietly override any prior settings of the variable
+echo $'\nmap $host $mock_absolute_root_url { default "http://static-mock-harvest-source:11088/"; }' >> ckan-mock-harvest-sources/static/vars.conf
+popd

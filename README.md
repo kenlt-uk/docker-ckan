@@ -317,6 +317,18 @@ ckan
 
 ```
 
+## Mock harvest source
+
+The docker compose configurations start an instance of the static [mock harvest source](https://github.com/alphagov/ckan-mock-harvest-sources)
+which should make it easy to populate the database with some basic standard content. To use this, add a harvest
+source with the address `http://static-mock-harvest-source:11088` and of type "CKAN". The content served by this
+harvest source is live modifiable from the `src/<version>/ckan-mock-harvest-sources/static/responses/` directory.
+
+For this harvest source to appear to work _completely_ right, you may need to add the hostname
+`static-mock-harvest-source` to your host machine's `/etc/hosts` file as an alias to `127.0.0.1`. This is because
+CKAN's web interface will link "directly" to the actual data files (and of course, it will be doing so using the
+hostname _it_ knows it by), so you have to do some tweaking of your host machine's configuration to allow your
+browser to resolve that address correctly.
 
 ## Known Issues
 
