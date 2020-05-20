@@ -29,4 +29,8 @@ git clone https://github.com/geopython/pycsw.git --branch 2.4.0
 git clone https://github.com/alphagov/ckan-mock-harvest-sources.git
 # appending this should quietly override any prior settings of the variable
 echo $'\nmap $host $mock_absolute_root_url { default "http://static-mock-harvest-source:11088/"; }' >> ckan-mock-harvest-sources/static/vars.conf
+
+if [[ ! -z $2 && $2 == 'full' ]]; then
+    git clone https://github.com/alphagov/datagovuk_publish.git
+fi
 popd
