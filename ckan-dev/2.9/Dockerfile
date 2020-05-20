@@ -37,5 +37,6 @@ RUN mkdir $SRC_EXTENSIONS_DIR
 RUN mkdir /var/log/ckan
 
 COPY setup/start_ckan_development-2.9.sh ${APP_DIR}/start_ckan_development.sh
+COPY setup/init_config-2.9.sh ${APP_DIR}/init_config.sh
 
 # CMD ["/srv/app/start_ckan_development.sh"]
