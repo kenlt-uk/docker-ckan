@@ -7,4 +7,11 @@ else
     VERSION=2.7
 fi
 
-docker-compose -f docker-compose-$VERSION.yml up
+if [[ ! -z $2 && $2 == 'full' ]]; then
+    echo "=== Full DGU stack"
+    FULL_ARGS="-f docker-compose-$VERSION-full.yml"
+else
+    echo "=== CKAN stack"
+fi
+
+docker-compose -f docker-compose-$VERSION.yml $FULL_ARGS up

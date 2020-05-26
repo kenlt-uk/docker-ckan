@@ -55,19 +55,20 @@ To start the containers:
 
 ## Development mode
 
-To develop local extensions use the `docker-compose.dev.yml` file:
-
 To setup your dev environment by cloning ckan and the extensions to your local src directory:
 
-    ./scripts/bootstrap.sh <version> # eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used
+    ./scripts/bootstrap.sh <version> <?full>  # eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used, the optional full flag can be used to also build the stack with DGU publish (https://github.com/alphagov/datagovuk_publish)
 
 To build the images:
 
-    ./scripts/rebuild-ckan.sh <version> <optional all>#  eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used. If starting from new, the script will take at least 20 minutes to run. If `all` is passed as an argument all the docker project will be rebuilt, otherwise the docker image from dockerhub for ckan-main will be pulled and only postdev will be built.
+    ./scripts/rebuild-ckan.sh <version> <?(main, all)> <?full>  #  eg ./scripts/bootstrap.sh 2.8  
+    - If no version is supplied the default of 2.7 is used. If starting from new, the script will take at least 20 minutes to run. 
+    - If `all` is passed as a second argument all the docker project will be rebuilt. If `main` is passed in the ckan-main and ckan-postdev projects will be built. Otherwise the docker image from dockerhub for ckan-main will be pulled and only postdev will be built.
+    - if `full` is passed in as an argument Publish (https://github.com/alphagov/datagovuk_publish) will also be built as part of the stack.
 
 To start the containers:
 
-	./scripts/start-ckan.sh <version>  eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used
+	./scripts/start-ckan.sh <version> <?full> eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used. If full is supplied as the second argument DGU Publish (https://github.com/alphagov/datagovuk_publish) will also be started on the stack.
 
 See [CKAN Images](#ckan-images) for more details of what happens when using development mode.
 
@@ -91,7 +92,7 @@ for help
 
 to pass in args
 
-    ./scripts/reset-ckan.sh <image (postdev, main, dev, base)> <reset volumes (Yn)> <version (default 2.7, 2.8)>
+    ./scripts/reset-ckan.sh <image (postdev, main, dev, base)> <reset volumes (Yn)> <version (default 2.7, 2.8, 2.9)> <?full to remove publish images and elasticsearch volume>
 
 ### Updating CKAN configuration, production.ini
 

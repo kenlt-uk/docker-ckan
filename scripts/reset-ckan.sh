@@ -2,18 +2,35 @@
 
 if [[ ! -z $3 && $3 == '2.8' ]]; then
     VERSION=2.8
+    VERSION_TAG=-$VERSION
 elif [[ ! -z $3 && $3 == '2.9' ]]; then
     VERSION=2.9
+    VERSION_TAG=-$VERSION
 else
     VERSION=2.7
 fi
 
+if [[ ! -z $4 && $4 == 'full' ]]; then
+    IS_FULL=$4
+    FULL_ARGS="-f docker-compose-$VERSION-full.yml"
+fi
+
 echo "Docker compose down to remove containers"
-docker-compose -f docker-compose-$VERSION.yml down
+docker-compose -f docker-compose-$VERSION.yml $FULL_ARGS down
 
 function remove_volumes {
     echo "Removing volumes..."
-    ./scripts/reset-volumes.sh $VERSION
+    ./scripts/reset-volumes.sh $VERSION $IS_FULL
+}
+
+function remove_publish {
+    echo "Removing publish images..."
+    docker rmi govuk/publish:$VERSION
+}
+
+function remove_mock_harvest_source {
+    echo "Removing mock harvest source..."
+    docker rmi docker-ckan_static-mock-harvest-source$VERSION_TAG
 }
 
 function remove_postdev {
@@ -40,13 +57,18 @@ function remove_ckan_base {
 }
 
 if [[ ! -z $1 && $1 == 'help' ]]; then
-    echo "Usage: ./scripts/reset-ckan.sh <images from (postdev, main, dev, base)> <remove volumes (Yn)> "
+    echo "Usage: ./scripts/reset-ckan.sh <images from (postdev, main, dev, base)> <remove volumes (Yn)> <version 2.7, 2.8, 2.9> <full to remove publish>"
 else
 
     while True; do
         remove=$1
         if [[ -z $remove ]]; then
             read -p "remove images (postdev, main, dev, base): " remove
+        fi
+
+        if [[ ! -z $FULL_ARGS ]]; then
+            remove_publish
+            remove_mock_harvest_source
         fi
 
         if [[ $remove == "postdev" ]]; then

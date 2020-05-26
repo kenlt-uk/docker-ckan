@@ -22,6 +22,13 @@ else
     BUILD=postdev
 fi
 
+if [[ ! -z $3 && $3 == 'full' ]]; then
+    echo "=== Full DGU stack"
+    FULL_ARGS="-f docker-compose-$VERSION-full.yml"
+else
+    echo "=== CKAN stack"
+fi
+
 if [[ $BUILD == 'all' || $BUILD == 'main' ]]; then
 
     if [[ $BUILD == 'all' ]]; then
@@ -34,4 +41,4 @@ fi
 
 (cd ckan-postdev && docker build -t govuk/ckan-postdev:$VERSION -f $VERSION/Dockerfile .)
 
-docker-compose -f docker-compose-$VERSION.yml build
+docker-compose -f docker-compose-$VERSION.yml $FULL_ARGS build
