@@ -78,7 +78,7 @@ Find out names of running containers:
 
 To ssh onto the ckan container:
 
-    docker exec -it docker-ckan_ckan-postdev_1 bash
+    docker exec -it ckan-2.7 bash
 
 To ssh onto the postgres container:
 

@@ -2,6 +2,7 @@ version: "3"
 
 services:
   ckan-postdev:
+    container_name: ckan-2.7
     image: govuk/ckan-postdev:2.7
     build:
       context: ckan-postdev/
@@ -87,6 +88,18 @@ services:
     networks:
       - ckan-2.7
 
+  dynamic-mock-harvest-source:
+    image: govuk/dynamic-mock-harvest-source:2.7
+    container_name: dynamic-mock-harvest-source
+    build:
+      context: ./src/2.7/ckan-mock-harvest-sources/dynamic/
+    ports:
+      - "8001:8001"
+    networks:
+      - ckan-2.7
+    volumes:
+      - ./src/2.7/ckan-mock-harvest-sources/dynamic:/srv/apps/dynamic-mock-harvest-source
+  
 volumes:
   ckan_storage:
   pg_data:

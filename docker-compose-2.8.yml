@@ -2,6 +2,7 @@ version: "3"
 
 services:
   ckan-postdev-2.8:
+    container_name: ckan-2.8
     image: govuk/ckan-postdev:2.8
     build:
       context: ckan-postdev/
