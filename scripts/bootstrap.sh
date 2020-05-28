@@ -18,6 +18,8 @@ else
     SRC_DIR=2.7
 fi
 
+echo -e "Please ensure that the ${SRC_DIR} src directory is empty before running this command. This command will not populate the directories required for this project to run effectively unless said directories are already empty or don't exist.\n"
+
 mkdir -p src/$SRC_DIR
 pushd src/$SRC_DIR
 git clone --branch ckan-$CKAN_VERSION https://github.com/$CKAN_FORK/ckan
