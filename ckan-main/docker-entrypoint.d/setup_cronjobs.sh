@@ -1,8 +1,8 @@
 # run harvest job to start or set job status
-echo "*/5 * * * * paster --plugin=ckan harvester run -c $CKAN_INI" > /etc/crontabs/root
+echo "*/5 * * * * paster --plugin=ckanext-harvest harvester run -c $CKAN_INI" > /etc/crontabs/root
 
 # clean up harvest logs
-echo "*/30 * * * * paster --plugin=ckan harvester clean_harvest_log -c $CKAN_INI" >> /etc/crontabs/root
+echo "*/30 * * * * paster --plugin=ckanext-harvest harvester clean_harvest_log -c $CKAN_INI" >> /etc/crontabs/root
 
 # rebuild solr index
 echo "*/5 * * * * paster --plugin=ckan search-index rebuild -o -c $CKAN_INI" >> /etc/crontabs/root
