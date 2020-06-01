@@ -12,7 +12,7 @@ RUN echo UTC > /etc/timezone
 ENV DCAT_SHA=8c55890e7bf9644460ae71470f37abbd9295c9fa
 ENV HARVEST_SHA=73db5f1ee67fc86521cfd1861b5d699ff45b1e33
 ENV SPATIAL_SHA=c35e1249cfb3c7b2f1286f433fd51c6fe8f05b72
-ENV DATAGOVUK_VERSION=release_165
+ENV DATAGOVUK_VERSION=master-2.8
 
 RUN which python && \
     pip install --upgrade setuptools && \
