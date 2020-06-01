@@ -128,6 +128,14 @@ In order to run a harvest job manually, you need to run these commands on the co
 
 The `test-harvest-source-name` can be derived from the URL after creating a harvest source.
 
+#### Creating organogram datasets
+
+In order to create a sample organogram dataset you will need to follow these steps:
+
+- Under the Datasets tab click on `Add Dataset`
+- Select the Organisation structure including senior roles for central government from the schema/vocabulary drop down menu
+- On the next page upload an organogram from your clone of [ckanext-datagovuk](https://github.com/alphagov/ckanext-datagovuk) located at `ckanext/datagovuk/tests/data` depending on the scenario that you want.
+
 #### Database / Redis / Solr is not found during tests
 
 If you have checked out a branch of CKAN or one of the extensions its possible that the config settings have been reset when pulling down the commits if you do this whilst the docker stack is still running.
