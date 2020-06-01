@@ -320,6 +320,8 @@ ckan
 
 ## Mock harvest source
 
+### Static
+
 The docker compose configurations start an instance of the static [mock harvest source](https://github.com/alphagov/ckan-mock-harvest-sources)
 which should make it easy to populate the database with some basic standard content. To use this, add a harvest
 source with the address `http://static-mock-harvest-source:11088` and of type "CKAN". The content served by this
@@ -330,6 +332,14 @@ For this harvest source to appear to work _completely_ right, you may need to ad
 CKAN's web interface will link "directly" to the actual data files (and of course, it will be doing so using the
 hostname _it_ knows it by), so you have to do some tweaking of your host machine's configuration to allow your
 browser to resolve that address correctly.
+
+### Dynamic
+
+The docker compose configurations also start an instance of the dynamic [mock harvest source](https://github.com/alphagov/ckan-mock-harvest-sources)
+which can be used to test out harvesting. To use this, add a harvest
+source with the address `http://dynamic-mock-harvest-source:8001/1/` and of type "WAF". 
+
+Further documentation about the dynamic mock harvest source can be [read](https://github.com/alphagov/ckan-mock-harvest-sources/tree/master/dynamic) which which will enable you to define the number of datasets available for harvesting and the delay on the harvest source server.
 
 ## Known Issues
 
