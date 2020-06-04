@@ -9,8 +9,8 @@ RUN echo UTC > /etc/timezone
 # Install any extensions needed by your CKAN instance
 # (Make sure to add the plugins to CKAN__PLUGINS in the .env file)
 
-ENV DCAT_SHA=8c55890e7bf9644460ae71470f37abbd9295c9fa
-ENV HARVEST_SHA=73db5f1ee67fc86521cfd1861b5d699ff45b1e33
+ENV DCAT_SHA=b693bc911578cfc28e80c871d8e8eddb07411cfc
+ENV HARVEST_SHA=944f67c48d274df79a2719b5553698e3e6980a51
 ENV SPATIAL_SHA=c35e1249cfb3c7b2f1286f433fd51c6fe8f05b72
 ENV DATAGOVUK_VERSION=release_165
 
@@ -18,10 +18,10 @@ RUN which python && \
     pip install --upgrade setuptools && \
     # install numpy outside of requirements.txt as was complaining of python 3.5 requirement
     pip install numpy==1.16.4 && \
-    pip install -e git+https://github.com/alphagov/ckanext-dcat.git@$DCAT_SHA#egg=ckanext-dcat && \
-    pip install -r https://raw.githubusercontent.com/alphagov/ckanext-dcat/$DCAT_SHA/requirements.txt && \
-    pip install -e git+https://github.com/alphagov/ckanext-harvest.git@$HARVEST_SHA#egg=ckanext-harvest && \
-    pip install -r https://raw.githubusercontent.com/alphagov/ckanext-harvest/$HARVEST_SHA/pip-requirements.txt && \
+    pip install -e git+https://github.com/ckan/ckanext-dcat.git@$DCAT_SHA#egg=ckanext-dcat && \
+    pip install -r https://raw.githubusercontent.com/ckan/ckanext-dcat/$DCAT_SHA/requirements.txt && \
+    pip install -e git+https://github.com/ckan/ckanext-harvest.git@$HARVEST_SHA#egg=ckanext-harvest && \
+    pip install -r https://raw.githubusercontent.com/ckan/ckanext-harvest/$HARVEST_SHA/pip-requirements.txt && \
     pip install -e git+https://github.com/alphagov/ckanext-spatial.git@$SPATIAL_SHA#egg=ckanext-spatial && \
     pip install -r https://raw.githubusercontent.com/alphagov/ckanext-spatial/$SPATIAL_SHA/pip-requirements.txt && \
     pip install -e git://github.com/alphagov/ckanext-datagovuk.git@$DATAGOVUK_VERSION#egg=ckanext-datagovuk && \

@@ -25,7 +25,7 @@ pushd src/$SRC_DIR
 git clone --branch ckan-$CKAN_VERSION https://github.com/$CKAN_FORK/ckan
 
 git clone --branch $DATAGOVUK_BRANCH https://github.com/alphagov/ckanext-datagovuk
-git clone https://github.com/alphagov/ckanext-harvest
+git clone https://github.com/ckan/ckanext-harvest
 git clone --branch dgu-fixes https://github.com/alphagov/ckanext-spatial
 git clone https://github.com/ckan/ckanext-dcat
 git clone https://github.com/geopython/pycsw.git --branch 2.4.0 
