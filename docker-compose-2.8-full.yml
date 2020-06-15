@@ -19,7 +19,7 @@ services:
       - ckan-2.8
 
   publish-2.8:
-    image: govuk/publish:2.8
+    image: govuk/publish:latest
     container_name: publish-2.8
     build:
       context: ./src/2.8/datagovuk_publish/
@@ -40,6 +40,26 @@ services:
       - ./logs/2.8:/var/log/sidekiq
     networks:
       - ckan-2.8
+
+  find-2.8:
+    image: govuk/find:latest
+    container_name: find-2.8
+    build:
+      context: ./src/2.8/datagovuk_find/
+    env_file:
+      - .env-2.8
+    links:
+      - elasticsearch-2.8:elasticsearch
+    depends_on: 
+      - elasticsearch-2.8
+    command: bash -c "./bin/setup-docker.sh"
+    volumes:
+      - ./src/2.8/datagovuk_find:/srv/app/datagovuk_find
+      - ./logs/2.8:/var/log/find
+    networks:
+      - ckan-2.8
+    ports:
+      - "4001:3000"
 
 volumes:
   es_data-2.8:
