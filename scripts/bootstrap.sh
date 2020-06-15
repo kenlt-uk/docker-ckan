@@ -36,5 +36,6 @@ echo $'\nmap $host $mock_absolute_root_url { default "http://static-mock-harvest
 
 if [[ ! -z $2 && $2 == 'full' ]]; then
     git clone https://github.com/alphagov/datagovuk_publish.git
+    git clone https://github.com/alphagov/datagovuk_find.git
 fi
 popd
