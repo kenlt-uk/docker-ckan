@@ -352,3 +352,4 @@ Further documentation about the dynamic mock harvest source can be [read](https:
 ## Known Issues
 
 * The SOLR index does not contain harvest metadata which is required by the CSW load job. A work around has been to run a solr reindex cronjob every 5 minutes to ensure that it picks up the latest when a harvest job is run. On production there is a similar cron job running but it only runs once a day.
+* The `-dev` dependencies of all discovered extensions are installed into the python environment at startup time by default, but this can lead to conflicts. If this leads to trouble getting test suites to pass, the variable `DEV_EXTENSIONS_WHITELIST` can be set to a comma-separated list of extensions (by directory name under `$SRC_EXTENSIONS_DIR`) for which dev dependencies should be installed.
