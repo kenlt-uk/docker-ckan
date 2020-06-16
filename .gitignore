@@ -12,3 +12,5 @@ src/*
 .Trashes
 
 logs/
+
+*.tar
