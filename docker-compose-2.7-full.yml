@@ -19,7 +19,7 @@ services:
       - ckan-2.7
 
   publish:
-    image: govuk/publish:2.7
+    image: govuk/publish:latest
     container_name: publish
     build:
       context: ./src/2.7/datagovuk_publish/
@@ -40,6 +40,26 @@ services:
       - ./logs/2.7:/var/log/sidekiq
     networks:
       - ckan-2.7
+
+  find:
+    image: govuk/find:latest
+    container_name: find
+    build:
+      context: ./src/2.7/datagovuk_find/
+    env_file:
+      - .env-2.7
+    links:
+      - elasticsearch
+    depends_on: 
+      - elasticsearch
+    command: bash -c "./bin/setup-docker.sh"
+    volumes:
+      - ./src/2.7/datagovuk_find:/srv/app/datagovuk_find
+      - ./logs/2.7:/var/log/find
+    networks:
+      - ckan-2.7
+    ports:
+      - "4000:3000"
 
 volumes:
   es_data:

@@ -11,8 +11,14 @@ else
     VERSION=2.7
 fi
 
-if [[ ! -z $2 && $2 == 'all' ]]; then
-    echo "=== Building all projects"
+if [[ ! -z $2 && $2 == 'full' ]]; then
+    echo "=== Building postdev only"
+    BUILD=postdev
+
+    echo "=== Full DGU stack"
+    FULL_ARGS="-f docker-compose-$VERSION-full.yml"
+elif [[ ! -z $2 && $2 == 'all' ]]; then
+    echo "=== Building all CKAN projects"
     BUILD=all
 elif [[ ! -z $2 && $2 == 'main' ]]; then
     echo "=== Building main and postdev"
@@ -25,7 +31,7 @@ fi
 if [[ ! -z $3 && $3 == 'full' ]]; then
     echo "=== Full DGU stack"
     FULL_ARGS="-f docker-compose-$VERSION-full.yml"
-else
+elif [[ ! -z $2 && $2 != 'full' ]]; then
     echo "=== CKAN stack"
 fi
 

@@ -28,6 +28,11 @@ function remove_publish {
     docker rmi govuk/publish:$VERSION
 }
 
+function remove_find {
+    echo "Removing find images..."
+    docker rmi govuk/find:$VERSION
+}
+
 function remove_mock_harvest_source {
     echo "Removing mock harvest source..."
     docker rmi docker-ckan_static-mock-harvest-source$VERSION_TAG
@@ -57,7 +62,7 @@ function remove_ckan_base {
 }
 
 if [[ ! -z $1 && $1 == 'help' ]]; then
-    echo "Usage: ./scripts/reset-ckan.sh <images from (postdev, main, dev, base)> <remove volumes (Yn)> <version 2.7, 2.8, 2.9> <full to remove publish>"
+    echo "Usage: ./scripts/reset-ckan.sh <images from (postdev, main, dev, base)> <remove volumes (Yn)> <version 2.7, 2.8, 2.9> <full to remove Publish and Find>"
 else
 
     while True; do
@@ -68,6 +73,7 @@ else
 
         if [[ ! -z $FULL_ARGS ]]; then
             remove_publish
+            remove_find
             remove_mock_harvest_source
         fi
 

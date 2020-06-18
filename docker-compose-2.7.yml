@@ -61,7 +61,9 @@ services:
     image: redis:alpine
     networks:
         - ckan-2.7
-  
+    volumes:
+      - redis_data:/data
+
   nginx:
     container_name: nginx
     build:
@@ -104,6 +106,7 @@ volumes:
   ckan_storage:
   pg_data:
   solr_data:
+  redis_data:
 
 networks:
     ckan-2.7:

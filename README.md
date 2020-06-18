@@ -53,22 +53,38 @@ To start the containers:
 
 	./scripts/start-ckan.sh
 
+### Running the full datagovuk stack
+
+NOTE: In order to run elasticsearch you will need to set your Docker memory to 4 gb and Docker swap memory to 2 gb, otherwise elasticsearch will stop with error code 137.
+
+To clone ckan and ckan extensions with 2.7:
+
+	./scripts/bootstrap.sh 2.7 full
+
+To build the images, defaulting to CKAN 2.7, pulling down govuk/ckan-main and building only the postdev container:
+
+	./scripts/rebuild-ckan.sh 2.7 full
+
+To start the containers:
+
+	./scripts/start-ckan.sh 2.7 full
+
 ## Development mode
 
 To setup your dev environment by cloning ckan and the extensions to your local src directory:
 
-    ./scripts/bootstrap.sh <version> <?full>  # eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used, the optional full flag can be used to also build the stack with DGU publish (https://github.com/alphagov/datagovuk_publish)
+    ./scripts/bootstrap.sh <version> <?full>  # eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used, the optional full flag can be used to also build the stack with DGU publish (https://github.com/alphagov/datagovuk_publish) and Find (https://github.com/alphagov/datagovuk_find)
 
 To build the images:
 
     ./scripts/rebuild-ckan.sh <version> <?(main, all)> <?full>  #  eg ./scripts/bootstrap.sh 2.8  
     - If no version is supplied the default of 2.7 is used. If starting from new, the script will take at least 20 minutes to run. 
     - If `all` is passed as a second argument all the docker project will be rebuilt. If `main` is passed in the ckan-main and ckan-postdev projects will be built. Otherwise the docker image from dockerhub for ckan-main will be pulled and only postdev will be built.
-    - if `full` is passed in as an argument Publish (https://github.com/alphagov/datagovuk_publish) will also be built as part of the stack.
+    - if `full` is passed in as an argument Publish (https://github.com/alphagov/datagovuk_publish) and Find (https://github.com/alphagov/datagovuk_find) will also be built as part of the stack.
 
 To start the containers:
 
-	./scripts/start-ckan.sh <version> <?full> eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used. If full is supplied as the second argument DGU Publish (https://github.com/alphagov/datagovuk_publish) will also be started on the stack.
+	./scripts/start-ckan.sh <version> <?full> eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used. If full is supplied as the second argument DGU Publish (https://github.com/alphagov/datagovuk_publish) and Find (https://github.com/alphagov/datagovuk_find) will also be started on the stack.
 
 See [CKAN Images](#ckan-images) for more details of what happens when using development mode.
 
@@ -92,7 +108,7 @@ for help
 
 to pass in args
 
-    ./scripts/reset-ckan.sh <image (postdev, main, dev, base)> <reset volumes (Yn)> <version (default 2.7, 2.8, 2.9)> <?full to remove publish images and elasticsearch volume>
+    ./scripts/reset-ckan.sh <image (postdev, main, dev, base)> <reset volumes (Yn)> <version (default 2.7, 2.8, 2.9)> <?full to remove Publish and Find images and elasticsearch volume>
 
 ### Updating CKAN configuration, production.ini
 
@@ -199,6 +215,10 @@ The new extension will be created in the `src/` folder. You might need to change
 
 All ckan logs are available under `./logs` on your machine.
 
+Datagov UK Publish sidekiq logs are available under `sidekiq.log`
+
+Datagov UK Find logs are available under `find.log`
+
 ### Running the remote debugger remote-pdb
 
 This is useful when debugging tests.
@@ -236,6 +256,14 @@ CSW summary:
   http://localhost:5000/csw?service=CSW&version=2.0.2&request=GetRecords&typenames=csw:Record&elementsetname=brief
 
 NOTE - update 5000 with the relevant port for the CKAN version you are running
+
+### Accessing Find website
+
+When running with the 2.7 CKAN stack navigate to:
+
+    http://localhost:4000
+
+Port 4000 is available for CKAN 2.7, 4001 for 2.8, 4002 for 2.9.
 
 ## CKAN images
 

@@ -13,3 +13,4 @@ fi
 docker volume rm docker-ckan_ckan_storage$VERSION
 docker volume rm docker-ckan_solr_data$VERSION
 docker volume rm docker-ckan_pg_data$VERSION
+docker volume rm docker-ckan_redis_data$VERSION
