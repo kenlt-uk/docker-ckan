@@ -1,0 +1,113 @@
+version: "3"
+
+services:
+  ckan-postdev-0:
+    container_name: ckan-2.7-0
+    image: govuk/ckan-postdev:2.7-0
+    build:
+      context: ckan-postdev/
+      dockerfile: 2.7-0/Dockerfile
+      args:
+        # set DISABLE_CRON to 1 to disable harvest & pycsw cronjobs (good idea when running tests)
+        - DISABLE_CRON=0
+        # set START_CKAN to 1 to start ckan and supervisord, 0 to prevent them from starting
+        # stopping ckan and background processes can be useful during development to investigate bugs
+        - START_CKAN=1
+    env_file:
+      - .env-2.7-0
+    links:
+      - db-0:db
+      - solr-0:solr
+      - redis-0:redis
+    ports:
+      - "0.0.0.0:3010:3000"
+    volumes:
+      - ./src/2.7-0:/srv/app/src_extensions
+      - ckan_storage-0:/var/lib/ckan
+      - ./logs/2.7-0:/var/log/ckan
+    depends_on: 
+      - db-0
+      - solr-0
+      - redis-0
+      - static-mock-harvest-source-0
+    command: bash -c "/srv/app/start_ckan_development.sh"
+    networks:
+      - ckan-2.7-0
+
+  db-0:
+    container_name: db-0
+    env_file:
+      - .env-2.7
+    build:
+      context: postgresql/
+    volumes:
+      - pg_data-0:/var/lib/postgresql/data
+    networks:
+      - ckan-2.7-0
+  
+  solr-0:
+    container_name: solr-0
+    build:
+      context: solr/
+    ports:
+      - "8993:8983"
+    volumes:
+      - solr_data-0:/opt/solr/server/solr/ckan/data/index
+    networks:
+      - ckan-2.7-0
+  
+  redis-0:
+    container_name: redis-0
+    image: redis:alpine
+    networks:
+        - ckan-2.7-0
+    volumes:
+      - redis_data-0:/data
+
+  nginx-0:
+    container_name: nginx-0
+    build:
+      context: nginx/
+      dockerfile: 2.7-0/Dockerfile
+    links:
+      - ckan-postdev-0:ckan-postdev
+    ports:
+      - 5010:80
+    volumes:
+      - ./logs/2.7-0:/var/log/nginx
+    networks:
+      - ckan-2.7-0
+
+  static-mock-harvest-source-0:
+    container_name: static-mock-harvest-source-0
+    build:
+      context: ./src/2.7-0/ckan-mock-harvest-sources/static/
+    ports:
+      - "11188:11088"
+    volumes:
+      - ./src/2.7-0/ckan-mock-harvest-sources/static/responses:/srv/responses
+      - ./src/2.7-0/ckan-mock-harvest-sources/static/mock-third-party:/src/mock-third-party
+    networks:
+      - ckan-2.7-0
+
+  dynamic-mock-harvest-source-0:
+    image: govuk/dynamic-mock-harvest-source:2.7-0
+    container_name: dynamic-mock-harvest-source-0
+    build:
+      context: ./src/2.7-0/ckan-mock-harvest-sources/dynamic/
+    ports:
+      - "8011:8001"
+    networks:
+      - ckan-2.7-0
+    volumes:
+      - ./src/2.7-0/ckan-mock-harvest-sources/dynamic:/srv/apps/dynamic-mock-harvest-source
+  
+volumes:
+  ckan_storage-0:
+  pg_data-0:
+  solr_data-0:
+  redis_data-0:
+
+networks:
+    ckan-2.7-0:
+        driver: bridge

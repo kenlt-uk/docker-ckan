@@ -6,6 +6,9 @@ if [[ ! -z $3 && $3 == '2.8' ]]; then
 elif [[ ! -z $3 && $3 == '2.9' ]]; then
     VERSION=2.9
     VERSION_TAG=-$VERSION
+elif [[ ! -z $3 && $3 == '2.7-0' ]]; then
+    VERSION=2.7-0
+    VERSION_TAG=-$VERSION
 else
     VERSION=2.7
 fi

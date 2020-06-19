@@ -1,0 +1,65 @@
+FROM govuk/ckan-dev:2.7-0
+
+MAINTAINER Your Name Here <you@example.com>
+
+# Set timezone
+RUN cp /usr/share/zoneinfo/UTC /etc/localtime
+RUN echo UTC > /etc/timezone
+
+# Install any extensions needed by your CKAN instance
+# (Make sure to add the plugins to CKAN__PLUGINS in the .env file)
+
+ENV DCAT_SHA=b693bc911578cfc28e80c871d8e8eddb07411cfc
+ENV HARVEST_SHA=944f67c48d274df79a2719b5553698e3e6980a51
+ENV SPATIAL_SHA=c35e1249cfb3c7b2f1286f433fd51c6fe8f05b72
+ENV DATAGOVUK_VERSION=release_165
+
+RUN which python && \
+    pip install --upgrade setuptools && \
+    # install numpy outside of requirements.txt as was complaining of python 3.5 requirement
+    pip install numpy==1.16.4 && \
+    pip install -e git+https://github.com/ckan/ckanext-dcat.git@$DCAT_SHA#egg=ckanext-dcat && \
+    pip install -r https://raw.githubusercontent.com/ckan/ckanext-dcat/$DCAT_SHA/requirements.txt && \
+    pip install -e git+https://github.com/ckan/ckanext-harvest.git@$HARVEST_SHA#egg=ckanext-harvest && \
+    pip install -r https://raw.githubusercontent.com/ckan/ckanext-harvest/$HARVEST_SHA/pip-requirements.txt && \
+    pip install -e git+https://github.com/alphagov/ckanext-spatial.git@$SPATIAL_SHA#egg=ckanext-spatial && \
+    pip install -r https://raw.githubusercontent.com/alphagov/ckanext-spatial/$SPATIAL_SHA/pip-requirements.txt && \
+    pip install -e git://github.com/alphagov/ckanext-datagovuk.git@$DATAGOVUK_VERSION#egg=ckanext-datagovuk && \
+    pip install -r https://raw.githubusercontent.com/alphagov/ckanext-datagovuk/$DATAGOVUK_VERSION/requirements.txt
+
+# Clone the extension(s) your are writing for your own project in the `src` folder
+# to get them mounted in this image at runtime
+
+COPY docker-entrypoint.d/* /docker-entrypoint.d/
+
+# Apply any patches needed to CKAN core or any of the built extensions (not the
+# runtime mounted ones)
+# See https://github.com/okfn/docker-ckan#applying-patches
+COPY patches ${APP_DIR}/patches
+
+RUN for d in $APP_DIR/patches/*; do \
+        if [ -d $d ]; then \
+            for f in `ls $d/*.patch | sort -g`; do \
+                cd $SRC_DIR/`basename "$d"` && echo "$0: Applying patch $f to $SRC_DIR/`basename $d`"; patch -p1 < "$f" ; \
+            done ; \
+        fi ; \
+    done
+
+# Setup pycsw
+COPY setup/pycsw.cfg $APP_DIR/pycsw.cfg
+COPY setup/pycsw_supervisord.conf /etc/supervisord.d/pycsw_supervisord.conf
+
+ENV PYCSW_CONFIG=$APP_DIR/pycsw.cfg 
+
+WORKDIR $SRC_EXTENSIONS_DIR
+
+RUN git clone --branch 2.4.0 https://github.com/geopython/pycsw.git && \
+    cd pycsw && \
+    pip install -e . && \
+    python setup.py build && \
+    python setup.py install && \
+    chown ckan $APP_DIR/pycsw.cfg && \
+    chmod 644 $APP_DIR/pycsw.cfg
+
+# CKAN configuration, modify production.ini in this project to avoid rebuilding ckan-base and ckan-dev projects
+COPY setup/production.ini $APP_DIR/production.ini

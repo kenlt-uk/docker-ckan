@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Default git fork
-CKAN_FORK=ckan
+CKAN_FORK=alphagov
 DATAGOVUK_BRANCH=master
 
 if [[ ! -z $1 && $1 == '2.8' ]]; then
@@ -13,8 +13,12 @@ elif [[ ! -z $1 && $1 == '2.9' ]]; then
     CKAN_VERSION=2.9-dgu
     CKAN_FORK=alphagov
     SRC_DIR=2.9
+elif [[ ! -z $1 && $1 == '2.7-0' ]]; then
+    CKAN_VERSION=2.7.4
+    CKAN_FORK=ckan
+    SRC_DIR=2.7-0
 else
-    CKAN_VERSION=2.7.6
+    CKAN_VERSION=2.7.7-fix-tag-error
     SRC_DIR=2.7
 fi
 

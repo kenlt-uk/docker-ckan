@@ -6,6 +6,9 @@ if [[ ! -z $1 && $1 == '2.8' ]]; then
 elif [[ ! -z $1 && $1 == '2.9' ]]; then
     echo "=== Building CKAN 2.9 ==="
     VERSION=2.9
+elif [[ ! -z $1 && $1 == '2.7-0' ]]; then
+    echo "=== Building CKAN 2.7-0 ==="
+    VERSION=2.7-0
 else
     echo "=== Building CKAN 2.7 ==="
     VERSION=2.7

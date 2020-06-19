@@ -8,9 +8,9 @@ ENV CKAN_INI=${APP_DIR}/production.ini
 ENV TEST_CKAN_INI=${SRC_DIR}/ckan/test-core.ini
 ENV PIP_SRC=${SRC_DIR}
 ENV CKAN_STORAGE_PATH=/var/lib/ckan
-ENV GIT_URL=https://github.com/alphagov/ckan.git
+ENV GIT_URL=https://github.com/ckan/ckan.git
 # CKAN version to build
-ENV GIT_BRANCH=ckan-2.7.7-fix-tag-error
+ENV GIT_BRANCH=ckan-2.7.4
 
 WORKDIR ${APP_DIR}
 
