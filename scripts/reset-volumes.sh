@@ -5,7 +5,7 @@ if [[ ! -z $1 && $1 == '2.8' ]]; then
 elif [[ ! -z $1 && $1 == '2.9' ]]; then
     VERSION=-2.9
 elif [[ ! -z $1 && $1 == '2.7-0' ]]; then
-    VERSION=-2.7-0
+    VERSION=-0
 fi
 
 if [[ ! -z $2 && $2 == 'full' ]]; then
