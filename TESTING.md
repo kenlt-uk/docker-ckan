@@ -40,7 +40,7 @@ https://github.com/alphagov/ckanext-spatial/ckanext/spatial/tests
 
 https://github.com/alphagov/ckanext-dcat/ckanext/dcat/tests
 
-Further details on how you can run these tests are given in the main (README)[README.md/#running-tests-for-extensions] or in the github repos README themselves.
+Further details on how you can run these tests are given in the main [README](README.md/#running-tests-for-extensions) or in the github repos README themselves.
 
 ### Publish and Find tests
 
