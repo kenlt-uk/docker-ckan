@@ -162,6 +162,10 @@ You can initialise the CKAN config by running this command -
 
 For extensions run the relevant `setup` file found in `/docker-entrypoint.d`, e.g. if you changed the harvest branch run `/docker-entrypoint.d/setup_harvest.sh`
 
+## Testing
+
+A [testing document](TESTING.md) is available which describes the testing tools available, how we use them, and possible plans for the future.
+
 ### Running tests for extensions
 
 #### ckanext-harvest
