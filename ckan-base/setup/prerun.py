@@ -66,7 +66,7 @@ def check_solr_connection(retry=None):
         print '[prerun] Giving up after 5 tries...'
         sys.exit(1)
 
-    url = os.environ.get('CKAN_SOLR_URL', '')
+    url = os.environ.get('DEV_CKAN_SOLR_URL', '')
     search_url = '{url}/select/?q=*&wt=json'.format(url=url)
 
     try:
