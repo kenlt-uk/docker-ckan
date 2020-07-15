@@ -112,7 +112,8 @@ to pass in args
 
 ### Updating CKAN configuration, production.ini
 
-When you have to make changes to the CKAN config file, `production.ini`, update the `production.ini` file located in `ckan-main/setup` project to get a faster turn around time. Changing it on `ckan-base/setup` will increase the turn around time to more than 10 minutes rather than under 5 minutes within the `ckan-main` project. `production.ini` has been left in `ckan-base` because the Dockerfile in `ckan-base` has references to it.
+When you have to make changes to the CKAN config file, `production.ini`, update the `production.ini` file located in `ckan-main/setup` project to get a faster turn around time. Changing it on `ckan-base/setup` will increase the turn around time to more than 10 minutes rather than under 5 minutes within the `ckan-main` project. `production.ini` has been left in `ckan-base` because the Dockerfile in `ckan-base` has references to it. You will also need to run `./scripts/rebuild-ckan.sh main` in order to rebuild the image from your local changes rather than
+use the image in docker hub.
 
 ### Useful tips during development
 
@@ -161,6 +162,15 @@ You can initialise the CKAN config by running this command -
     /srv/app/init_config.sh
 
 For extensions run the relevant `setup` file found in `/docker-entrypoint.d`, e.g. if you changed the harvest branch run `/docker-entrypoint.d/setup_harvest.sh`
+
+#### Container doesn't have additional files or updates to files
+
+It's possible that one of the images failed to build so docker is using a cached version of the image to build the container. 
+To fix the docker image it may be necessary to build the stack without using cached images:
+
+    ../scripts/rebuild-ckan.sh dev no-cache
+
+Will rebuild the stack from the `ckan-dev` Dockerfile.
 
 ## Testing
 

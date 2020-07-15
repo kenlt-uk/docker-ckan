@@ -20,6 +20,9 @@ if [[ ! -z $2 && $2 == 'full' ]]; then
 elif [[ ! -z $2 && $2 == 'all' ]]; then
     echo "=== Building all CKAN projects"
     BUILD=all
+elif [[ ! -z $2 && $2 == 'dev' ]]; then
+    echo "=== Building dev, main and postdev"
+    BUILD=dev
 elif [[ ! -z $2 && $2 == 'main' ]]; then
     echo "=== Building main and postdev"
     BUILD=main
@@ -33,15 +36,24 @@ if [[ ! -z $3 && $3 == 'full' ]]; then
     FULL_ARGS="-f docker-compose-$VERSION-full.yml"
 elif [[ ! -z $2 && $2 != 'full' ]]; then
     echo "=== CKAN stack"
+    NO_CACHE=''
+    if [[ ! -z $3 && $3 == 'no-cache' ]]; then
+        echo "=== no cache"
+        NO_CACHE="--no-cache"
+    fi
 fi
 
-if [[ $BUILD == 'all' || $BUILD == 'main' ]]; then
+if [[ $BUILD == 'all' || $BUILD == 'main' || $BUILD == 'dev' ]]; then
 
     if [[ $BUILD == 'all' ]]; then
-        (cd ckan-base && docker build -t govuk/ckan-base:$VERSION -f $VERSION/Dockerfile .)
-        (cd ckan-dev && docker build -t govuk/ckan-dev:$VERSION -f $VERSION/Dockerfile .)
+        (cd ckan-base && docker build $NO_CACHE -t govuk/ckan-base:$VERSION -f $VERSION/Dockerfile .)
     fi
-    (cd ckan-main && docker build -t govuk/ckan-main:$VERSION -f $VERSION/Dockerfile.dev .)
+
+    if [[ $BUILD == 'all' || $BUILD == 'dev' ]]; then
+        (cd ckan-dev && docker build $NO_CACHE -t govuk/ckan-dev:$VERSION -f $VERSION/Dockerfile .)
+    fi
+
+    (cd ckan-main && docker build $NO_CACHE -t govuk/ckan-main:$VERSION -f $VERSION/Dockerfile.dev .)
 
 fi
 
