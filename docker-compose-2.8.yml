@@ -78,6 +78,18 @@ services:
     networks:
       - ckan-2.8
 
+  dynamic-mock-harvest-source-2.8:
+    image: govuk/dynamic-mock-harvest-source:2.8
+    container_name: dynamic-mock-harvest-source-2.8
+    build:
+      context: ./src/2.8/ckan-mock-harvest-sources/dynamic/
+    ports:
+      - "8002:8001"
+    networks:
+      - ckan-2.8
+    volumes:
+      - ./src/2.8/ckan-mock-harvest-sources/dynamic:/srv/apps/dynamic-mock-harvest-source
+
   static-mock-harvest-source-2.8:
     container_name: static-mock-harvest-source-2.8
     build:

@@ -1,6 +1,6 @@
 FROM govuk/ckan-dev:2.8
 
-MAINTAINER Your Name Here <you@example.com>
+MAINTAINER Data Gov UK <team@data.gov.uk>
 
 # Set timezone
 RUN cp /usr/share/zoneinfo/UTC /etc/localtime
@@ -11,7 +11,7 @@ RUN echo UTC > /etc/timezone
 
 ENV DCAT_SHA=b693bc911578cfc28e80c871d8e8eddb07411cfc
 ENV HARVEST_SHA=944f67c48d274df79a2719b5553698e3e6980a51
-ENV SPATIAL_SHA=c35e1249cfb3c7b2f1286f433fd51c6fe8f05b72
+ENV SPATIAL_SHA=f8bfb7501aaee49dd5a2419ba8785104c2f0d0a9
 ENV DATAGOVUK_VERSION=master-2.8
 
 RUN which python && \
@@ -51,9 +51,7 @@ COPY setup/pycsw_supervisord.conf /etc/supervisord.d/pycsw_supervisord.conf
 
 ENV PYCSW_CONFIG=$APP_DIR/pycsw.cfg 
 
-WORKDIR $SRC_EXTENSIONS_DIR
-
-RUN git clone  --branch 2.4.0 https://github.com/geopython/pycsw.git && \
+RUN cd $SRC_EXTENSIONS_DIR && git clone --branch 2.4.0 https://github.com/geopython/pycsw.git && \
     cd pycsw && \
     pip install -e . && \
     python setup.py build && \
