@@ -168,7 +168,7 @@ For extensions run the relevant `setup` file found in `/docker-entrypoint.d`, e.
 It's possible that one of the images failed to build so docker is using a cached version of the image to build the container. 
 To fix the docker image it may be necessary to build the stack without using cached images:
 
-    ../scripts/rebuild-ckan.sh dev no-cache
+    ../scripts/rebuild-ckan.sh 2.7 dev no-cache
 
 Will rebuild the stack from the `ckan-dev` Dockerfile.
 
