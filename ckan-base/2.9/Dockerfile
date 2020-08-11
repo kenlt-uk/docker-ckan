@@ -9,8 +9,8 @@ ENV TEST_CKAN_INI=${SRC_DIR}/ckan/test-core.ini
 ENV PIP_SRC=${SRC_DIR}
 ENV CKAN_STORAGE_PATH=/var/lib/ckan
 ENV GIT_URL=https://github.com/alphagov/ckan.git
-# CKAN version to build
-ENV GIT_BRANCH=ckan-2.9-dgu
+# CKAN version to build, CKAN 2.9
+ENV GIT_SHA=4dfbd90bb31118d4376228899df6c99da1136181
 
 WORKDIR ${APP_DIR}
 
@@ -63,7 +63,7 @@ RUN apk add --no-cache tzdata \
 COPY setup/supervisord.conf /etc
 
 # Install CKAN
-RUN pip install -e git+${GIT_URL}@${GIT_BRANCH}#egg=ckan && \
+RUN pip install -e git+${GIT_URL}@${GIT_SHA}#egg=ckan && \
     cd ${SRC_DIR}/ckan && \
     cp who.ini ${APP_DIR} && \
     pip install --no-binary :all: -r requirements-py2.txt && \

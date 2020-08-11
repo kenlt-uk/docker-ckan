@@ -13,6 +13,7 @@ elif [[ ! -z $1 && $1 == '2.9' ]]; then
     CKAN_VERSION=2.9-dgu
     CKAN_FORK=alphagov
     SRC_DIR=2.9
+    DATAGOVUK_BRANCH=ckan-2.9
 else
     CKAN_VERSION=2.7.6
     SRC_DIR=2.7
@@ -25,6 +26,7 @@ pushd src/$SRC_DIR
 git clone --branch ckan-$CKAN_VERSION https://github.com/$CKAN_FORK/ckan
 
 git clone --branch $DATAGOVUK_BRANCH https://github.com/alphagov/ckanext-datagovuk
+git checkout 118515d26048fc89c6254ae18c6a0e271e14f9fc
 git clone https://github.com/ckan/ckanext-harvest
 git clone https://github.com/alphagov/ckanext-spatial
 git clone https://github.com/ckan/ckanext-dcat

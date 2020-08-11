@@ -14,6 +14,14 @@ ENV HARVEST_SHA=944f67c48d274df79a2719b5553698e3e6980a51
 ENV SPATIAL_SHA=f8bfb7501aaee49dd5a2419ba8785104c2f0d0a9
 ENV DATAGOVUK_VERSION=ckan-2.9
 
+RUN pip install Pylons==1.0.3 && \
+    # webob version installed is not high enough as lacks some dependencies
+    pip install webob==1.8.6 && \
+    # cryptography 2.9 is broken with this error message
+    # ImportError: Error relocating /usr/lib/python2.7/site-packages/cryptography/hazmat/bindings/_openssl.so: RSA_get0_crt_params: symbol not found
+    # so set to cryptography 2.8
+    pip install cryptography==2.8
+
 RUN which python && \
     pip install --upgrade setuptools && \
     # install numpy outside of requirements.txt as was complaining of python 3.5 requirement
