@@ -17,7 +17,7 @@ if [[ ! -z $2 && $2 == 'full' ]]; then
 
     echo "=== Full DGU stack"
     FULL_ARGS="-f docker-compose-$VERSION-full.yml"
-elif [[ ! -z $2 && $2 == 'all' ]]; then
+elif [[ ! -z $2 && ( $2 == 'all' || $2 == 'base' ) ]]; then
     echo "=== Building all CKAN projects"
     BUILD=all
 elif [[ ! -z $2 && $2 == 'dev' ]]; then
