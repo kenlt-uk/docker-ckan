@@ -9,10 +9,17 @@ RUN echo UTC > /etc/timezone
 # Install any extensions needed by your CKAN instance
 # (Make sure to add the plugins to CKAN__PLUGINS in the .env file)
 
-ENV DCAT_SHA=b693bc911578cfc28e80c871d8e8eddb07411cfc
-ENV HARVEST_SHA=944f67c48d274df79a2719b5553698e3e6980a51
-ENV SPATIAL_SHA=f8bfb7501aaee49dd5a2419ba8785104c2f0d0a9
-ENV DATAGOVUK_VERSION=master-2.8
+ENV DCAT_SHA=b757e5be643a17f08b1bb102348c370abee149d5
+ENV HARVEST_SHA=af8c18ef1acf4e80e5d65aca301cd6869cef82f9
+ENV SPATIAL_SHA=46b706549aaf13a4ef2451d6185d7a90a75aeb0f
+ENV DATAGOVUK_VERSION=master
+ENV CKAN_TEST_SYSADMIN_NAME=testsysadmin
+ENV CKAN_TEST_SYSADMIN_PASSWORD=test1test
+
+# CKAN files in this project to avoid having to rebuild ckan-base and ckan-dev projects
+RUN echo "Copying main setup files"
+COPY setup/production.ini $APP_DIR/production.ini
+COPY setup/prerun.py $APP_DIR/prerun.py
 
 RUN which python && \
     pip install --upgrade setuptools && \
@@ -58,6 +65,3 @@ RUN cd $SRC_EXTENSIONS_DIR && git clone --branch 2.4.0 https://github.com/geopyt
     python setup.py install && \
     chown ckan $APP_DIR/pycsw.cfg && \
     chmod 644 $APP_DIR/pycsw.cfg
-
-# CKAN configuration, modify production.ini in this project to avoid rebuilding ckan-base and ckan-dev projects
-COPY setup/production.ini $APP_DIR/production.ini
