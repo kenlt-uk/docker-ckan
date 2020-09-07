@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 if [[ ! -z $1 && $1 == '2.8' ]]; then
     echo "=== Building CKAN 2.8 ==="
@@ -57,6 +58,6 @@ if [[ $BUILD == 'all' || $BUILD == 'main' || $BUILD == 'dev' ]]; then
 
 fi
 
-(cd ckan-postdev && docker build -t govuk/ckan-postdev:$VERSION -f $VERSION/Dockerfile .)
+(cd ckan-postdev && docker build $NO_CACHE -t govuk/ckan-postdev:$VERSION -f $VERSION/Dockerfile .)
 
 docker-compose -f docker-compose-$VERSION.yml $FULL_ARGS build
