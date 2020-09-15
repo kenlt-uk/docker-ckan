@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-if [[ ! -z $3 && $3 == '2.8' ]]; then
-    VERSION=2.8
-    VERSION_TAG=-$VERSION
+if [[ ! -z $3 && $3 == '2.7' ]]; then
+    VERSION=2.7
 elif [[ ! -z $3 && $3 == '2.9' ]]; then
     VERSION=2.9
     VERSION_TAG=-$VERSION
 else
-    VERSION=2.7
+    VERSION=2.8
+    VERSION_TAG=-$VERSION
 fi
 
 if [[ ! -z $4 && $4 == 'full' ]]; then
