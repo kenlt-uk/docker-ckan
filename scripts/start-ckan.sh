@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-if [[ ! -z $1 && $1 == '2.8' ]]; then
-    VERSION=2.8
+if [[ ! -z $1 && $1 == '2.7' ]]; then
+    VERSION=2.7
 elif [[ ! -z $1 && $1 == '2.9' ]]; then
     VERSION=2.9
 else
-    VERSION=2.7
+    VERSION=2.8
 fi
 
 if [[ ! -z $2 && $2 == 'full' ]]; then

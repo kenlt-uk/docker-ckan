@@ -35,9 +35,9 @@ The site is configured via env vars (the base CKAN image loads [ckanext-envvars]
 
 ## Quick start
 
-Available CKAN stacks: 2.7 (default), 2.8 and 2.9
+Available CKAN stacks: 2.7, 2.8 (default) and 2.9
 
-Copy the included `.env.example` and rename it to `.env-2.7` (or substitute 2.7 with 2.8/2.9) to modify it depending on your own needs and update `DEV_CKAN_SITE_URL` and `CKAN_PORT` to port `5001` for 2.8 or `5002` for 2.9.
+Copy the included `.env.example` and rename it to `.env-2.8` (or substitute 2.8 with 2.7/2.9) to modify it depending on your own needs and update `DEV_CKAN_SITE_URL` and `CKAN_PORT` to port `5001` for 2.8 or `5002` for 2.9.
 
 Using the default values on the `.env.example` file will get you a working CKAN instance. There is a sysadmin user created by default with the values defined in `CKAN_SYSADMIN_NAME` and `CKAN_SYSADMIN_PASSWORD`(`ckan_admin` and `test1234` by default). I shouldn't be telling you this but obviously don't run any public CKAN instance with the default settings.
 
@@ -45,7 +45,7 @@ To clone ckan and ckan extensions:
 
 	./scripts/bootstrap.sh
 
-To build the images, defaulting to CKAN 2.7, pulling down govuk/ckan-main and building only the postdev container:
+To build the images, defaulting to CKAN 2.8, pulling down govuk/ckan-main and building only the postdev container:
 
 	./scripts/rebuild-ckan.sh
 
@@ -57,17 +57,17 @@ To start the containers:
 
 NOTE: In order to run elasticsearch you will need to set your Docker memory to 4 gb and Docker swap memory to 2 gb, otherwise elasticsearch will stop with error code 137.
 
-To clone ckan and ckan extensions with 2.7:
+To clone ckan and ckan extensions with 2.8:
 
-	./scripts/bootstrap.sh 2.7 full
+	./scripts/bootstrap.sh 2.8 full
 
-To build the images, defaulting to CKAN 2.7, pulling down govuk/ckan-main and building only the postdev container:
+To build the images, defaulting to CKAN 2.8, pulling down govuk/ckan-main and building only the postdev container:
 
-	./scripts/rebuild-ckan.sh 2.7 full
+	./scripts/rebuild-ckan.sh 2.8 full
 
 To start the containers:
 
-	./scripts/start-ckan.sh 2.7 full
+	./scripts/start-ckan.sh 2.8 full
 
 ## Development mode
 
@@ -78,13 +78,13 @@ To setup your dev environment by cloning ckan and the extensions to your local s
 To build the images:
 
     ./scripts/rebuild-ckan.sh <version> <?(main, all)> <?full>  #  eg ./scripts/bootstrap.sh 2.8  
-    - If no version is supplied the default of 2.7 is used. If starting from new, the script will take at least 20 minutes to run. 
+    - If no version is supplied the default of 2.8 is used. If starting from new, the script will take at least 20 minutes to run. 
     - If `all` is passed as a second argument all the docker project will be rebuilt. If `main` is passed in the ckan-main and ckan-postdev projects will be built. Otherwise the docker image from dockerhub for ckan-main will be pulled and only postdev will be built.
     - if `full` is passed in as an argument Publish (https://github.com/alphagov/datagovuk_publish) and Find (https://github.com/alphagov/datagovuk_find) will also be built as part of the stack.
 
 To start the containers:
 
-	./scripts/start-ckan.sh <version> <?full> eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.7 is used. If full is supplied as the second argument DGU Publish (https://github.com/alphagov/datagovuk_publish) and Find (https://github.com/alphagov/datagovuk_find) will also be started on the stack.
+	./scripts/start-ckan.sh <version> <?full> eg ./scripts/bootstrap.sh 2.8  If no version is supplied the default of 2.8 is used. If full is supplied as the second argument DGU Publish (https://github.com/alphagov/datagovuk_publish) and Find (https://github.com/alphagov/datagovuk_find) will also be started on the stack.
 
 See [CKAN Images](#ckan-images) for more details of what happens when using development mode.
 
@@ -94,7 +94,7 @@ Find out names of running containers:
 
 To ssh onto the ckan container:
 
-    docker exec -it ckan-2.7 bash
+    docker exec -it ckan-2.8 bash
 
 To ssh onto the postgres container:
 
@@ -108,7 +108,7 @@ for help
 
 to pass in args
 
-    ./scripts/reset-ckan.sh <image (postdev, main, dev, base)> <reset volumes (Yn)> <version (default 2.7, 2.8, 2.9)> <?full to remove Publish and Find images and elasticsearch volume>
+    ./scripts/reset-ckan.sh <image (postdev, main, dev, base)> <reset volumes (Yn)> <version (default 2.8, 2.7, 2.9)> <?full to remove Publish and Find images and elasticsearch volume>
 
 ### Updating CKAN configuration, production.ini
 
@@ -126,7 +126,7 @@ If you cannot log in with the credentials in your `.env` file, it's possible tha
 
 #### Docker container is not staying up
 
-If the CKAN container is unable to stay healthy, it's possible that there has been a code change in your CKAN or extension code, so move the targeted source folder, e.g `src/2.7` to `src/2.7.bak`, if you want to still see your changes, or delete the folder. Then run `./scripts/bootstrap.sh` to download all the repositories again and start fresh.
+If the CKAN container is unable to stay healthy, it's possible that there has been a code change in your CKAN or extension code, so move the targeted source folder, e.g `src/2.8` to `src/2.8.bak`, if you want to still see your changes, or delete the folder. Then run `./scripts/bootstrap.sh` to download all the repositories again and start fresh.
 
 If the problem persists even after running a `./scripts/reset-ckan.sh`, it may be possible that there is an issue with the docker images / containers. In this case it's best to clear docker images and volumes down entirely. These commands will enable you to do that, note that they will remove images and volumes so only use this as a last resort.
 
@@ -168,7 +168,7 @@ For extensions run the relevant `setup` file found in `/docker-entrypoint.d`, e.
 It's possible that one of the images failed to build so docker is using a cached version of the image to build the container. 
 To fix the docker image it may be necessary to build the stack without using cached images:
 
-    ../scripts/rebuild-ckan.sh 2.7 dev no-cache
+    ../scripts/rebuild-ckan.sh 2.8 dev no-cache
 
 Will rebuild the stack from the `ckan-dev` Dockerfile.
 
@@ -273,9 +273,9 @@ NOTE - update 5000 with the relevant port for the CKAN version you are running
 
 ### Accessing Find website
 
-When running with the 2.7 CKAN stack navigate to:
+When running with the 2.8 CKAN stack navigate to:
 
-    http://localhost:4000
+    http://localhost:4001
 
 Port 4000 is available for CKAN 2.7, 4001 for 2.8, 4002 for 2.9.
 
@@ -374,7 +374,7 @@ ckan
 
 The docker compose configurations start an instance of the static [mock harvest source](https://github.com/alphagov/ckan-mock-harvest-sources)
 which should make it easy to populate the database with some basic standard content. To use this, add a harvest
-source with the address `http://static-mock-harvest-source:11088` and of type "CKAN". The content served by this
+source with the address `http://static-mock-harvest-source-2.8:11088` and of type "CKAN". The content served by this
 harvest source is live modifiable from the `src/<version>/ckan-mock-harvest-sources/static/responses/` directory.
 
 For this harvest source to appear to work _completely_ right, you may need to add the hostname
@@ -387,7 +387,7 @@ browser to resolve that address correctly.
 
 The docker compose configurations also start an instance of the dynamic [mock harvest source](https://github.com/alphagov/ckan-mock-harvest-sources)
 which can be used to test out harvesting. To use this, add a harvest
-source with the address `http://dynamic-mock-harvest-source:8001/1/` and of type "WAF". 
+source with the address `http://dynamic-mock-harvest-source-2.8:8001/1/` and of type "WAF". 
 
 Further documentation about the dynamic mock harvest source can be [read](https://github.com/alphagov/ckan-mock-harvest-sources/tree/master/dynamic) which which will enable you to define the number of datasets available for harvesting and the delay on the harvest source server.
 
