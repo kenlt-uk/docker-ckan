@@ -1,12 +1,20 @@
 #!/bin/bash
 
+# Initialise CKAN config
+
+ckan generate config ${CKAN_INI}
+ckan config-tool ${CKAN_INI} "ckan.plugins=${CKAN__PLUGINS}"
+ckan config-tool ${CKAN_INI} "ckan.site_url=${CKAN__SITE_URL}" 
+
 # Install any local extensions in the src_extensions volume
 echo "Looking for local extensions to install..."
 echo "Extension dir contents:"
 ls -la $SRC_EXTENSIONS_DIR
 for i in $SRC_EXTENSIONS_DIR/*
 do
-    if [ -d $i ];
+    if [ -d $i ] && [ $(basename $i) != 'ckan' ] && (
+        [ -z "$DEV_EXTENSIONS_WHITELIST" ] || [[ ",$DEV_EXTENSIONS_WHITELIST," =~ ",$(basename $i)," ]]
+    );
     then
 
         if [ -f $i/pip-requirements.txt ];

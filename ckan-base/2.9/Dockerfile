@@ -8,9 +8,9 @@ ENV CKAN_INI=${APP_DIR}/production.ini
 ENV TEST_CKAN_INI=${SRC_DIR}/ckan/test-core.ini
 ENV PIP_SRC=${SRC_DIR}
 ENV CKAN_STORAGE_PATH=/var/lib/ckan
-ENV GIT_URL=https://github.com/alphagov/ckan.git
+ENV GIT_URL=https://github.com/ckan/ckan.git
 # CKAN version to build, CKAN 2.9
-ENV GIT_SHA=4dfbd90bb31118d4376228899df6c99da1136181
+ENV GIT_SHA=eb6de9251b809077ef093785a05cbd92fde02982
 
 WORKDIR ${APP_DIR}
 
@@ -78,10 +78,13 @@ RUN addgroup -g 92 -S ckan && \
 RUN mkdir -p $CKAN_STORAGE_PATH && \
     chown -R ckan:ckan $CKAN_STORAGE_PATH
 
+# Create ckan log dir
+RUN mkdir -p /var/log/ckan
+
 COPY setup ${APP_DIR}
 COPY setup/prerun-2.9.py ${APP_DIR}/prerun.py
 COPY setup/ckan_harvesting.conf /etc/supervisord.d/ckan_harvesting.conf
-COPY setup/supervisor.worker.conf /etc/supervisord.d/worker.conf
+COPY setup/supervisor.worker-2.9.conf /etc/supervisord.d/worker.conf
 COPY setup/uwsgi.conf /srv/app/uwsgi.conf
 
 # Create entrypoint directory for children image scripts

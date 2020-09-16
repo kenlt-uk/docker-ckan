@@ -14,12 +14,16 @@ RUN pip install --upgrade pip
 # pip install is unable to install pytest-split-tests from dev-requirements.txt so install it manually
 RUN pip install pytest-split-tests==1.0.9
 
-RUN pip install --no-binary :all: -r https://raw.githubusercontent.com/alphagov/ckan/${GIT_SHA}/requirements-py2.txt
+# RUN pip install --no-binary :all: -r https://raw.githubusercontent.com/alphagov/ckan/${GIT_SHA}/requirements-py2.txt
+RUN pip install --no-binary :all: -r ${SRC_DIR}/ckan/requirements-py2.txt
+    # && \
+    # pip install six==1.15.0
 
-RUN pip install configparser && \
-    ckan generate config ${CKAN_INI} && \
-    ckan config-tool ${CKAN_INI} "ckan.plugins=${CKAN__PLUGINS}" && \
-    ckan config-tool ${CKAN_INI} "ckan.site_url=${CKAN__SITE_URL}" 
+RUN pip install configparser 
+# && \
+#     ckan generate config ${CKAN_INI} && \
+#     ckan config-tool ${CKAN_INI} "ckan.plugins=${CKAN__PLUGINS}" && \
+#     ckan config-tool ${CKAN_INI} "ckan.site_url=${CKAN__SITE_URL}" 
 
     # Upgrade pylons version as the bundled version specified in requirements-py2.txt does not work
 # RUN pip install Pylons==1.0.3 && \
@@ -34,7 +38,7 @@ RUN pip install configparser && \
 RUN mkdir $SRC_EXTENSIONS_DIR
 
 # create folder for logs
-RUN mkdir /var/log/ckan
+RUN mkdir -p /var/log/ckan
 
 COPY setup/start_ckan_development-2.9.sh ${APP_DIR}/start_ckan_development.sh
 COPY setup/init_config-2.9.sh ${APP_DIR}/init_config.sh
