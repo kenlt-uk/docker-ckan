@@ -19,6 +19,7 @@ services:
       - db-2.9:db
       - solr-2.9:solr
       - redis-2.9:redis
+      - static-mock-harvest-source-2.9:static-mock-harvest-source
     ports:
       - "0.0.0.0:3002:3000"
     volumes:
@@ -30,7 +31,8 @@ services:
       - solr-2.9
       - redis-2.9
       - static-mock-harvest-source-2.9
-    command: bash -c "/srv/app/start_ckan_development.sh"
+    # command: bash -c "/srv/app/start_ckan_development.sh"
+    command: bash -c "tail -f /dev/null"
     networks:
       - ckan-2.9
 
@@ -78,12 +80,24 @@ services:
     networks:
       - ckan-2.9
 
+  dynamic-mock-harvest-source-2.9:
+    image: govuk/dynamic-mock-harvest-source:2.9
+    container_name: dynamic-mock-harvest-source-2.9
+    build:
+      context: ./src/2.9/ckan-mock-harvest-sources/dynamic/
+    ports:
+      - "8003:8001"
+    networks:
+      - ckan-2.9
+    volumes:
+      - ./src/2.9/ckan-mock-harvest-sources/dynamic:/srv/apps/dynamic-mock-harvest-source
+
   static-mock-harvest-source-2.9:
     container_name: static-mock-harvest-source-2.9
     build:
       context: ./src/2.9/ckan-mock-harvest-sources/static/
     ports:
-      - "11088:11088"
+      - "11090:11088"
     volumes:
       - ./src/2.9/ckan-mock-harvest-sources/static/responses:/srv/responses
       - ./src/2.9/ckan-mock-harvest-sources/static/mock-third-party:/src/mock-third-party
