@@ -1,12 +1,8 @@
-FROM solr:6.4.2-alpine
+FROM solr:6.6.2
 MAINTAINER Open Knowledge
 
 # Enviroment
 ENV SOLR_CORE ckan
-# ENV CKAN_VERSION dev-v2.7
-
-# User
-USER root
 
 # Create Directories
 RUN mkdir -p /opt/solr/server/solr/$SOLR_CORE/conf
@@ -16,18 +12,20 @@ RUN mkdir -p /opt/solr/server/solr/$SOLR_CORE/data
 ADD solrconfig.xml \
 # https://raw.githubusercontent.com/ckan/ckan/$CKAN_VERSION/ckan/config/solr/schema.xml \
 schema.xml \
-https://raw.githubusercontent.com/apache/lucene-solr/releases/lucene-solr/6.0.0/solr/server/solr/configsets/basic_configs/conf/currency.xml \
-https://raw.githubusercontent.com/apache/lucene-solr/releases/lucene-solr/6.0.0/solr/server/solr/configsets/basic_configs/conf/synonyms.txt \
-https://raw.githubusercontent.com/apache/lucene-solr/releases/lucene-solr/6.0.0/solr/server/solr/configsets/basic_configs/conf/stopwords.txt \
-https://raw.githubusercontent.com/apache/lucene-solr/releases/lucene-solr/6.0.0/solr/server/solr/configsets/basic_configs/conf/protwords.txt \
-https://raw.githubusercontent.com/apache/lucene-solr/releases/lucene-solr/6.0.0/solr/server/solr/configsets/data_driven_schema_configs/conf/elevate.xml \
+https://raw.githubusercontent.com/apache/lucene-solr/releases/lucene-solr/6.6.2/solr/server/solr/configsets/basic_configs/conf/currency.xml \
+https://raw.githubusercontent.com/apache/lucene-solr/releases/lucene-solr/6.6.2/solr/server/solr/configsets/basic_configs/conf/synonyms.txt \
+https://raw.githubusercontent.com/apache/lucene-solr/releases/lucene-solr/6.6.2/solr/server/solr/configsets/basic_configs/conf/stopwords.txt \
+https://raw.githubusercontent.com/apache/lucene-solr/releases/lucene-solr/6.6.2/solr/server/solr/configsets/basic_configs/conf/protwords.txt \
+https://raw.githubusercontent.com/apache/lucene-solr/releases/lucene-solr/6.6.2/solr/server/solr/configsets/data_driven_schema_configs/conf/elevate.xml \
 /opt/solr/server/solr/$SOLR_CORE/conf/
 
 # Create Core.properties
 RUN echo name=$SOLR_CORE > /opt/solr/server/solr/$SOLR_CORE/core.properties
 
 # Giving ownership to Solr
-RUN chown -R $SOLR_USER:$SOLR_USER /opt/solr/server/solr/$SOLR_CORE/
-# $SOLR_CORE/data needs to have user permissions updated
-# chown -R $SOLR_USER:$SOLR_USER /opt/solr/server/solr/$SOLR_CORE/data
-USER $SOLR_USER
+USER root
+
+RUN chown -R $SOLR_USER:$SOLR_USER /opt/solr/server/solr/$SOLR_CORE
+
+# User
+USER $SOLR_USER:$SOLR_USER
