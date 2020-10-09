@@ -52,7 +52,7 @@ services:
     ports:
       - "8985:8983"
     volumes:
-      - solr_data-2.9:/opt/solr/server/solr/ckan/data/index
+      - solr_data-2.9:/opt/solr/server/solr/ckan/data
     networks:
       - ckan-2.9
   
@@ -83,7 +83,7 @@ services:
     build:
       context: ./src/2.9/ckan-mock-harvest-sources/static/
     ports:
-      - "11088:11088"
+      - "11090:11088"
     volumes:
       - ./src/2.9/ckan-mock-harvest-sources/static/responses:/srv/responses
       - ./src/2.9/ckan-mock-harvest-sources/static/mock-third-party:/src/mock-third-party
