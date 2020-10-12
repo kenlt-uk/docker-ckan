@@ -8,9 +8,10 @@ ENV CKAN_INI=${APP_DIR}/production.ini
 ENV TEST_CKAN_INI=${SRC_DIR}/ckan/test-core.ini
 ENV PIP_SRC=${SRC_DIR}
 ENV CKAN_STORAGE_PATH=/var/lib/ckan
-ENV GIT_URL=https://github.com/alphagov/ckan.git
-# CKAN version to build
-ENV GIT_BRANCH=ckan-2.9-dgu
+
+# ckan 2.9 release tag
+ENV GIT_URL=https://github.com/ckan/ckan.git
+ENV GIT_SHA=ba0120dc0c798bbc9b6d8e9ad83db01a197ea179
 
 WORKDIR ${APP_DIR}
 
@@ -63,7 +64,7 @@ RUN apk add --no-cache tzdata \
 COPY setup/supervisord.conf /etc
 
 # Install CKAN
-RUN pip install -e git+${GIT_URL}@${GIT_BRANCH}#egg=ckan && \
+RUN pip install -e git+${GIT_URL}@${GIT_SHA}#egg=ckan && \
     cd ${SRC_DIR}/ckan && \
     cp who.ini ${APP_DIR} && \
     pip install --no-binary :all: -r requirements-py2.txt && \
@@ -81,7 +82,7 @@ RUN mkdir -p $CKAN_STORAGE_PATH && \
 COPY setup ${APP_DIR}
 COPY setup/prerun-2.9.py ${APP_DIR}/prerun.py
 COPY setup/ckan_harvesting.conf /etc/supervisord.d/ckan_harvesting.conf
-COPY setup/supervisor.worker.conf /etc/supervisord.d/worker.conf
+COPY setup/supervisor.worker-2.9.conf /etc/supervisord.d/worker.conf
 COPY setup/uwsgi.conf /srv/app/uwsgi.conf
 
 # Create entrypoint directory for children image scripts

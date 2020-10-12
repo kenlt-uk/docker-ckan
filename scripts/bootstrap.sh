@@ -4,18 +4,21 @@
 CKAN_FORK=ckan
 DATAGOVUK_BRANCH=master
 
-if [[ ! -z $1 && $1 == '2.7' ]]; then
-    CKAN_VERSION=2.7.6
-    SRC_DIR=2.7
-elif [[ ! -z $1 && $1 == '2.9' ]]; then
-    CKAN_VERSION=2.9-dgu
-    CKAN_FORK=alphagov
-    SRC_DIR=2.9
-else
+if [[ ! -z $1 && $1 == '2.8' ]]; then
     CKAN_VERSION=2.8.3-dgu
     CKAN_FORK=alphagov
     SRC_DIR=2.8
     DATAGOVUK_BRANCH=master
+elif [[ ! -z $1 && $1 == '2.9' ]]; then
+    # CKAN_VERSION=2.9-dgu
+    # CKAN_FORK=alphagov
+    CKAN_VERSION=2.9.0
+    CKAN_FORK=ckan
+    SRC_DIR=2.9
+else
+    CKAN_VERSION=2.7.6
+    SRC_DIR=2.7
+    DATAGOVUK_BRANCH=ckan-2.7
 fi
 
 echo -e "Please ensure that the ${SRC_DIR} src directory is empty before running this command. This command will not populate the directories required for this project to run effectively unless said directories are already empty or don't exist.\n"
