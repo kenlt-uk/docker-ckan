@@ -72,7 +72,7 @@ echo "Loading the following plugins: $CKAN__PLUGINS"
 ckan config-tool $CKAN_INI \
     "sqlalchemy.url = $DEV_CKAN_SQLALCHEMY_URL" \
     "ckan.site_url = $DEV_CKAN_SITE_URL" \
-    "solr_url = $DEV_CKAN_SOLR_URL" \
+    "solr_url = $CKAN_SOLR_URL" \
     "ckan.redis.url = $DEV_CKAN_REDIS_URL" \
     "ckan.site_url = $DEV_CKAN_SITE_URL" \
     "ckan.plugins = $CKAN__PLUGINS"
