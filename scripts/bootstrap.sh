@@ -12,6 +12,7 @@ if [[ ! -z $1 && $1 == '2.8' ]]; then
 elif [[ ! -z $1 && $1 == '2.9' ]]; then
     # CKAN_VERSION=2.9-dgu
     # CKAN_FORK=alphagov
+    DATAGOVUK_BRANCH=ckan-2.9
     CKAN_VERSION=2.9.0
     CKAN_FORK=ckan
     SRC_DIR=2.9
