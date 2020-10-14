@@ -18,7 +18,7 @@ ckan config-tool $SRC_DIR/ckan/test-core.ini \
     "solr_url = $TEST_CKAN_SOLR_URL" \
     "ckan.redis.url = $TEST_CKAN_REDIS_URL"
 
-ckan config-tool $APP_DIR/production.ini \
+ckan config-tool $CKAN_INI \
   "ckan.datagovuk.s3_aws_access_key_id = $CKAN_S3_AWS_ACCESS_KEY_ID" \
   "ckan.datagovuk.s3_aws_secret_access_key = $CKAN_S3_AWS_SECRET_ACCESS_KEY" \
   "ckan.datagovuk.s3_bucket_name = $CKAN_S3_BUCKET_NAME" \
