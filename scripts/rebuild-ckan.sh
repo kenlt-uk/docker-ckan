@@ -61,8 +61,3 @@ fi
 (cd ckan-postdev && docker build $NO_CACHE -t govuk/ckan-postdev:$VERSION -f $VERSION/Dockerfile .)
 
 docker-compose -f docker-compose-$VERSION.yml $FULL_ARGS build
-
-
-(cd ckan-base && docker build --no-cache -t govuk/ckan-base:2.9 -f 2.9/Dockerfile .)
-(cd ckan-dev && docker build --no-cache -t govuk/ckan-dev:2.9 -f 2.9/Dockerfile .)
-(cd ckan && docker build --no-cache -t govuk/ckan-main:2.9 -f 2.9/Dockerfile .)

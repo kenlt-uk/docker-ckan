@@ -1,12 +1,34 @@
 #!/bin/bash
 
+# additional requirements to install as the installation process on 2.9 is slightly broken
+# echo "*** install python2 and dev requirements"
+# pip install -r $SRC_DIR/ckan/requirements-py2.txt
+# pip install -r $SRC_DIR/ckan/dev-requirements.txt
+# pip install six==1.13.0
+# pip install cryptography==2.8
+
+# Initialise CKAN config
+
+ckan generate config ${CKAN_INI}
+
+## code to handle problem with config-tool - https://github.com/ckan/ckan/issues/5568
+# site url can't be set with the config tool
+echo "*** using hack for ckan.site_url"
+perl -pi -e "s|^(ckan.site_url =)$|\1 ${DEV_CKAN_SITE_URL}|;" $CKAN_INI
+## end hack
+
+ckan config-tool ${CKAN_INI} "ckan.plugins=${CKAN__PLUGINS}"
+ckan config-tool ${CKAN_INI} "ckan.site_url=${DEV_CKAN_SITE_URL}" 
+
 # Install any local extensions in the src_extensions volume
 echo "Looking for local extensions to install..."
 echo "Extension dir contents:"
 ls -la $SRC_EXTENSIONS_DIR
 for i in $SRC_EXTENSIONS_DIR/*
 do
-    if [ -d $i ];
+    if [ -d $i ] && [ $(basename $i) != 'ckan' ] && (
+        [ -z "$DEV_EXTENSIONS_WHITELIST" ] || [[ ",$DEV_EXTENSIONS_WHITELIST," =~ ",$(basename $i)," ]]
+    );
     then
 
         if [ -f $i/pip-requirements.txt ];
@@ -50,7 +72,7 @@ echo "Loading the following plugins: $CKAN__PLUGINS"
 ckan config-tool $CKAN_INI \
     "sqlalchemy.url = $DEV_CKAN_SQLALCHEMY_URL" \
     "ckan.site_url = $DEV_CKAN_SITE_URL" \
-    "solr_url = $DEV_CKAN_SOLR_URL" \
+    "solr_url = $CKAN_SOLR_URL" \
     "ckan.redis.url = $DEV_CKAN_REDIS_URL" \
     "ckan.site_url = $DEV_CKAN_SITE_URL" \
     "ckan.plugins = $CKAN__PLUGINS"
