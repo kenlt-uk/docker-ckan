@@ -2,7 +2,7 @@
 
 echo "====== Set up Harvest ======"
 
-ckanext-harvest harvester initdb -c "$CKAN_INI"
+ckan -c "$CKAN_INI" harvester initdb
 
 echo "Loading test settings into harvest test-core.ini"
 
