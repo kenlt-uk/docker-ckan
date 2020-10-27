@@ -12,7 +12,7 @@ RUN echo UTC > /etc/timezone
 ENV DCAT_SHA=b693bc911578cfc28e80c871d8e8eddb07411cfc
 ENV HARVEST_SHA=944f67c48d274df79a2719b5553698e3e6980a51
 ENV SPATIAL_SHA=f8bfb7501aaee49dd5a2419ba8785104c2f0d0a9
-ENV DATAGOVUK_VERSION=release_202
+ENV DATAGOVUK_SHA=03baa4f4b54dd8063b744b94a35e4e9dc6343599
 
 RUN which python && \
     pip install --upgrade setuptools && \
@@ -24,8 +24,8 @@ RUN which python && \
     pip install -r https://raw.githubusercontent.com/ckan/ckanext-harvest/$HARVEST_SHA/pip-requirements.txt && \
     pip install -e git+https://github.com/alphagov/ckanext-spatial.git@$SPATIAL_SHA#egg=ckanext-spatial && \
     pip install -r https://raw.githubusercontent.com/alphagov/ckanext-spatial/$SPATIAL_SHA/pip-requirements.txt && \
-    pip install -e git://github.com/alphagov/ckanext-datagovuk.git@$DATAGOVUK_VERSION#egg=ckanext-datagovuk && \
-    pip install -r https://raw.githubusercontent.com/alphagov/ckanext-datagovuk/$DATAGOVUK_VERSION/requirements.txt
+    pip install -e git://github.com/alphagov/ckanext-datagovuk.git@$DATAGOVUK_SHA#egg=ckanext-datagovuk && \
+    pip install -r https://raw.githubusercontent.com/alphagov/ckanext-datagovuk/$DATAGOVUK_SHA/requirements.txt
 
 # Clone the extension(s) your are writing for your own project in the `src` folder
 # to get them mounted in this image at runtime
