@@ -3,6 +3,9 @@
 # Default git fork
 CKAN_FORK=ckan
 DATAGOVUK_BRANCH=master
+SPATIAL_BRANCH=master
+HARVEST_FORK=ckan
+HARVEST_BRANCH=master
 
 if [[ ! -z $1 && $1 == '2.8' ]]; then
     CKAN_VERSION=2.8.3-dgu
@@ -10,10 +13,11 @@ if [[ ! -z $1 && $1 == '2.8' ]]; then
     SRC_DIR=2.8
     DATAGOVUK_BRANCH=master
 elif [[ ! -z $1 && $1 == '2.9' ]]; then
-    # CKAN_VERSION=2.9-dgu
-    # CKAN_FORK=alphagov
-    DATAGOVUK_BRANCH=ckan-2.9
-    CKAN_VERSION=2.9.0
+    DATAGOVUK_BRANCH=python3
+    HARVEST_FORK=alphagov
+    HARVEST_BRANCH=fix-run_test
+    SPATIAL_BRANCH=python3
+    CKAN_VERSION=2.9.1
     CKAN_FORK=ckan
     SRC_DIR=2.9
 else
@@ -26,11 +30,11 @@ echo -e "Please ensure that the ${SRC_DIR} src directory is empty before running
 
 mkdir -p src/$SRC_DIR
 pushd src/$SRC_DIR
-git clone --branch ckan-$CKAN_VERSION https://github.com/$CKAN_FORK/ckan
+git clone https://github.com/$CKAN_FORK/ckan --branch ckan-$CKAN_VERSION
 
-git clone --branch $DATAGOVUK_BRANCH https://github.com/alphagov/ckanext-datagovuk
-git clone https://github.com/ckan/ckanext-harvest
-git clone https://github.com/alphagov/ckanext-spatial
+git clone https://github.com/alphagov/ckanext-datagovuk --branch $DATAGOVUK_BRANCH 
+git clone https://github.com/$HARVEST_FORK/ckanext-harvest --branch $HARVEST_BRANCH
+git clone https://github.com/alphagov/ckanext-spatial --branch $SPATIAL_BRANCH
 git clone https://github.com/ckan/ckanext-dcat
 git clone https://github.com/geopython/pycsw.git --branch 2.4.0 
 
