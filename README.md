@@ -112,8 +112,15 @@ to pass in args
 
 ### Updating CKAN configuration, production.ini
 
-When you have to make changes to the CKAN config file, `production.ini`, update the `production.ini` file located in `ckan-main/setup` project to get a faster turn around time. Changing it on `ckan-base/setup` will increase the turn around time to more than 10 minutes rather than under 5 minutes within the `ckan-main` project. `production.ini` has been left in `ckan-base` because the Dockerfile in `ckan-base` has references to it. You will also need to run `./scripts/rebuild-ckan.sh main` in order to rebuild the image from your local changes rather than
-use the image in docker hub.
+When you have to make changes to the CKAN config file, `production.ini`, update the `production.ini` file located in `ckan-main/setup` project to get a faster turn around time. Changing it on `ckan-base/setup` will increase the turn around time to more than 10 minutes rather than under 5 minutes within the `ckan-main` project. `production.ini` has been left in `ckan-base` because the Dockerfile in `ckan-base` has references to it. You will also need to run `./scripts/rebuild-ckan.sh main` in order to rebuild the image from your local changes rather than use the image in docker hub.
+
+### Updating code in CKAN and its extensions
+
+Sometimes the changes made on your local machine won't be reflected in the docker container, so in order to copy these changes across you can use this command:
+
+`export CKANEXT_SRC=<CKAN extension, eg datagovuk> && sudo rsync -avz --update --existing --progress ./src_extensions/ckanext-$CKANEXT_SRC/ ./src/ckanext-$CKANEXT_SRC/`
+
+This should pick up any changes that match existing files to `/srv/app/src/<CKAN extension>`, any files that you added will have to be manually copied across. If you want to copy over everything regardless then simply remove `--existing` from the command.
 
 ### Useful tips during development
 
