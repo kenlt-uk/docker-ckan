@@ -2,7 +2,8 @@ import os
 import sys
 import subprocess
 import psycopg2
-import urllib2
+from urllib.request import urlopen
+from urllib.error import URLError
 import time
 import re
 
@@ -19,14 +20,14 @@ def update_plugins():
     cmd = ['ckan', 'config-tool',
            ckan_ini, 'ckan.plugins = {}'.format(plugins)]
     subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-    print '[prerun] Plugins set.'
+    print('[prerun] Plugins set.')
 
     
 def check_main_db_connection(retry=None):
 
     conn_str = os.environ.get('DEV_CKAN_SQLALCHEMY_URL')
     if not conn_str:
-        print '[prerun] DEV_CKAN_SQLALCHEMY_URL not defined, not checking db'
+        print('[prerun] DEV_CKAN_SQLALCHEMY_URL not defined, not checking db')
     return check_db_connection(conn_str, retry)
 
 
@@ -35,15 +36,15 @@ def check_db_connection(conn_str, retry=None):
     if retry is None:
         retry = RETRY
     elif retry == 0:
-        print '[prerun] Giving up after 5 tries...'
+        print('[prerun] Giving up after 5 tries...')
         sys.exit(1)
 
     try:
         connection = psycopg2.connect(conn_str)
 
     except psycopg2.Error as e:
-        print str(e)
-        print '[prerun] Unable to connect to the database, waiting...'
+        print(str(e))
+        print('[prerun] Unable to connect to the database, waiting...')
         time.sleep(10)
         check_db_connection(conn_str, retry=retry - 1)
     else:
@@ -55,17 +56,17 @@ def check_solr_connection(retry=None):
     if retry is None:
         retry = RETRY
     elif retry == 0:
-        print '[prerun] Giving up after 5 tries...'
+        print('[prerun] Giving up after 5 tries...')
         sys.exit(1)
 
     url = os.environ.get('CKAN_SOLR_URL', '')
     search_url = '{url}/select/?q=*&wt=json'.format(url=url)
 
     try:
-        connection = urllib2.urlopen(search_url)
-    except urllib2.URLError as e:
-        print str(e)
-        print '[prerun] Unable to connect to solr, waiting...'
+        connection = urlopen(search_url)
+    except URLError as e:
+        print(str(e))
+        print('[prerun] Unable to connect to solr, waiting...')
         time.sleep(10)
         check_solr_connection(retry=retry - 1)
     else:
@@ -75,18 +76,18 @@ def check_solr_connection(retry=None):
 def init_db(ini=ckan_ini):
 
     db_command = ['ckan', '-c', ini, 'db', 'init']
-    print '[prerun] Initializing or upgrading db - start: {}'.format(ini)
+    print('[prerun] Initializing or upgrading db - start: {}'.format(ini))
     try:
         subprocess.check_output(db_command, stderr=subprocess.STDOUT)
-        print '[prerun] Initializing or upgrading db - end'
-    except subprocess.CalledProcessError, e:
+        print('[prerun] Initializing or upgrading db - end')
+    except subprocess.CalledProcessError as e:
         if 'OperationalError' in e.output:
-            print e.output
-            print '[prerun] Database not ready, waiting a bit before exit...'
+            print(e.output)
+            print('[prerun] Database not ready, waiting a bit before exit...')
             time.sleep(5)
             sys.exit(1)
         else:
-            print e.output
+            print(e.output)
             raise e
 
 
@@ -102,8 +103,8 @@ def create_sysadmin():
         command = ['ckan', '-c', ckan_ini, 'user', 'show', name]
 
         out = subprocess.check_output(command)
-        if 'User:None' not in re.sub(r'\s', '', out):
-            print '[prerun] Sysadmin user exists, skipping creation'
+        if 'User:None' not in re.sub(r'\s', '', str(out)):
+            print('[prerun] Sysadmin user exists, skipping creation')
             return
 
         # Create user
@@ -116,7 +117,7 @@ def create_sysadmin():
         ]
 
         subprocess.call(command)
-        print '[prerun] Created user {0}'.format(name)
+        print('[prerun] Created user {0}'.format(name))
 
         # Make it sysadmin
         command = [
@@ -126,7 +127,7 @@ def create_sysadmin():
         ]
 
         subprocess.call(command)
-        print '[prerun] Made user {0} a sysadmin'.format(name)
+        print('[prerun] Made user {0} a sysadmin'.format(name))
 
 
 if __name__ == '__main__':
@@ -134,11 +135,11 @@ if __name__ == '__main__':
     maintenance = os.environ.get('MAINTENANCE_MODE', '').lower() == 'true'
 
     if maintenance:
-        print '[prerun] Maintenance mode, skipping setup...'
+        print('[prerun] Maintenance mode, skipping setup...')
     else:
         check_main_db_connection()
         init_db()
         init_db(ini=test_ckan_ini)
         update_plugins()
-        check_solr_connection()
         create_sysadmin()
+        check_solr_connection()
