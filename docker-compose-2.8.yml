@@ -52,7 +52,7 @@ services:
     ports:
       - "8984:8983"
     volumes:
-      - solr_data-2.8:/opt/solr/server/solr/ckan/data/index
+      - solr_data-2.8:/opt/solr/server/solr/ckan/data
     networks:
       - ckan-2.8
   

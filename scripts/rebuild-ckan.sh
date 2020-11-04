@@ -44,13 +44,13 @@ elif [[ ! -z $2 && $2 != 'full' ]]; then
     fi
 fi
 
-if [[ $BUILD == 'all' || $BUILD == 'main' || $BUILD == 'dev' ]]; then
+if [[ $BUILD == 'all' || $BUILD == 'base' || $BUILD == 'main' || $BUILD == 'dev' ]]; then
 
-    if [[ $BUILD == 'all' ]]; then
+    if [[ $BUILD == 'all' || $BUILD == 'base' ]]; then
         (cd ckan-base && docker build $NO_CACHE -t govuk/ckan-base:$VERSION -f $VERSION/Dockerfile .)
     fi
 
-    if [[ $BUILD == 'all' || $BUILD == 'dev' ]]; then
+    if [[ $BUILD == 'all' || $BUILD == 'base' || $BUILD == 'dev' ]]; then
         (cd ckan-dev && docker build $NO_CACHE -t govuk/ckan-dev:$VERSION -f $VERSION/Dockerfile .)
     fi
 

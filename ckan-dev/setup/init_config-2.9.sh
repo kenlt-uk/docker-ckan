@@ -24,3 +24,22 @@ ckan config-tool $CKAN_INI \
   "ckan.datagovuk.s3_bucket_name = $CKAN_S3_BUCKET_NAME" \
   "ckan.datagovuk.s3_url_prefix = $CKAN_S3_URL_PREFIX" \
   "ckan.datagovuk.s3_aws_region_name = $CKAN_S3_AWS_REGION_NAME"
+
+# update test.ini in ckan and extensions
+for i in $SRC_EXTENSIONS_DIR/*
+do
+    if [ -d $i ] && (
+        [ -z "$DEV_EXTENSIONS_WHITELIST" ] || [[ ",$DEV_EXTENSIONS_WHITELIST," =~ ",$(basename $i)," ]]
+    );
+    then
+        if [ -f $i/test.ini ]; then
+            echo "=== Updating test config in $i"
+            ckan config-tool $i/test.ini \
+                "use = config:../../src/ckan/test-core.ini" \
+                "sqlalchemy.url = $TEST_CKAN_SQLALCHEMY_URL" \
+                "ckan.site_url = $TEST_CKAN_SITE_URL" \
+                "solr_url = $TEST_CKAN_SOLR_URL" \
+                "ckan.redis.url = $TEST_CKAN_REDIS_URL"
+        fi
+    fi
+done

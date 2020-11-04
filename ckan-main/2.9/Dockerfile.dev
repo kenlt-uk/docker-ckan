@@ -9,19 +9,17 @@ RUN echo UTC > /etc/timezone
 # Install any extensions needed by your CKAN instance
 # (Make sure to add the plugins to CKAN__PLUGINS in the .env file)
 
-ENV DCAT_SHA=b693bc911578cfc28e80c871d8e8eddb07411cfc
-ENV HARVEST_SHA=944f67c48d274df79a2719b5553698e3e6980a51
-ENV SPATIAL_SHA=f8bfb7501aaee49dd5a2419ba8785104c2f0d0a9
-ENV DATAGOVUK_VERSION=ckan-2.9
+ENV DCAT_SHA=6b7ec505f303fb18e0eebcebf67130d36b3dca82
+ENV HARVEST_SHA=0c5c05f9fddb8295a307ef990aa5e52f4cf0bf6d
+ENV SPATIAL_SHA=7684ef23a330e72512d4678da30165a5b97ca06f
+ENV DATAGOVUK_VERSION=python3
 
-RUN which python && \
-    pip install --upgrade setuptools && \
+RUN pip install --upgrade setuptools && \
     # install numpy outside of requirements.txt as was complaining of python 3.5 requirement
-    pip install numpy==1.16.4 && \
     pip install -e git+https://github.com/ckan/ckanext-dcat.git@$DCAT_SHA#egg=ckanext-dcat && \
     pip install -r https://raw.githubusercontent.com/ckan/ckanext-dcat/$DCAT_SHA/requirements.txt && \
-    pip install -e git+https://github.com/ckan/ckanext-harvest.git@$HARVEST_SHA#egg=ckanext-harvest && \
-    pip install -r https://raw.githubusercontent.com/ckan/ckanext-harvest/$HARVEST_SHA/pip-requirements.txt && \
+    pip install -e git+https://github.com/alphagov/ckanext-harvest.git@$HARVEST_SHA#egg=ckanext-harvest && \
+    pip install -r https://raw.githubusercontent.com/alphagov/ckanext-harvest/$HARVEST_SHA/pip-requirements.txt && \
     pip install -e git+https://github.com/alphagov/ckanext-spatial.git@$SPATIAL_SHA#egg=ckanext-spatial && \
     pip install -r https://raw.githubusercontent.com/alphagov/ckanext-spatial/$SPATIAL_SHA/pip-requirements.txt && \
     pip install -e git://github.com/alphagov/ckanext-datagovuk.git@$DATAGOVUK_VERSION#egg=ckanext-datagovuk && \
@@ -45,6 +43,9 @@ RUN for d in $APP_DIR/patches/*; do \
         fi ; \
     done
 
+# CKAN configuration, modify production.ini in this project to avoid rebuilding ckan-base and ckan-dev projects
+COPY setup/production-2.9.ini $APP_DIR/production.ini
+
 # Setup pycsw
 COPY setup/pycsw.cfg $APP_DIR/pycsw.cfg
 COPY setup/pycsw_supervisord.conf /etc/supervisord.d/pycsw_supervisord.conf
@@ -58,6 +59,3 @@ RUN cd $SRC_EXTENSIONS_DIR && git clone --branch 2.4.0 https://github.com/geopyt
     python setup.py install && \
     chown ckan $APP_DIR/pycsw.cfg && \
     chmod 644 $APP_DIR/pycsw.cfg
-
-# CKAN configuration, modify production.ini in this project to avoid rebuilding ckan-base and ckan-dev projects
-COPY setup/production-2.9.ini $APP_DIR/production.ini

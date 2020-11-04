@@ -1,5 +1,4 @@
-# FROM alpine:3.7
-FROM govuk/alpine-geos
+FROM govuk/trusty-python3:3.6
 
 # Internals, you probably don't need to change these
 ENV APP_DIR=/srv/app
@@ -9,71 +8,70 @@ ENV TEST_CKAN_INI=${SRC_DIR}/ckan/test-core.ini
 ENV PIP_SRC=${SRC_DIR}
 ENV CKAN_STORAGE_PATH=/var/lib/ckan
 
-# ckan 2.9 release tag
+# Set up virtual env as part of PATH so users don't need to activate venv
+ENV VIRTUAL_ENV=${APP_DIR}/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
+# ckan 2.9.1 release tag
 ENV GIT_URL=https://github.com/ckan/ckan.git
-ENV GIT_SHA=ba0120dc0c798bbc9b6d8e9ad83db01a197ea179
+ENV GIT_SHA=bb272bfc7167b35cbff8ce48ed815dd4e23597ba
 
 WORKDIR ${APP_DIR}
 
 # Install necessary packages to run CKAN
-RUN apk add --no-cache tzdata \
+RUN apt-get -y install tzdata \
         git \
         gettext \
         postgresql-client \
-        python \
         apache2-utils \
         libxml2 \
-        libxslt \
+        libxslt1.1 \
         musl-dev \
         uwsgi \
-        uwsgi-http \
-        uwsgi-corerouter \
-        uwsgi-python \
-        py2-gevent \
-        uwsgi-gevent \
-        libmagic \
+        libmagic-dev \
         curl \
         vim \
         sudo && \
     # Packages to build CKAN requirements and plugins
-    apk add --no-cache --virtual .build-deps \
-        postgresql-dev \
+    sudo apt-get -y install \
         gcc \
         make \
         g++ \
         autoconf \
         automake \
         libtool \
-        python-dev \
         libxml2-dev \
         libxslt-dev \
-        linux-headers && \
+        linux-headers-generic-lts-vivid && \
     # Create SRC_DIR
     mkdir -p ${SRC_DIR} && \
     # Install pip, supervisord and uwsgi
-    curl -o ${SRC_DIR}/get-pip.py https://bootstrap.pypa.io/get-pip.py && \
-    python ${SRC_DIR}/get-pip.py && \
-    pip install supervisor && \
-    mkdir /etc/supervisord.d && \
-    #pip wheel --wheel-dir=/wheels uwsgi gevent && \
-    rm -rf ${SRC_DIR}/get-pip.py
+    mkdir /etc/supervisord.d
 
-# RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
-#     apk add --update --no-cache geos@testing geos-dev@testing
+# Install CKAN
+RUN python3.6 -m venv ${VIRTUAL_ENV} && \
+    pip install supervisor && \
+    pip install -e git+${GIT_URL}@${GIT_SHA}#egg=ckan && \
+    cd ${SRC_DIR}/ckan && \
+    cp who.ini ${APP_DIR} && \
+    pip install --no-binary :all: -r requirements.txt && \
+    # Install CKAN envvars to support loading config from environment variables
+    pip install -e git+https://github.com/okfn/ckanext-envvars.git#egg=ckanext-envvars && \
+    ckan generate config ${CKAN_INI} && \
+    ## code to handle problem with config-tool - https://github.com/ckan/ckan/issues/5568
+    # site url can't be set with the config tool
+    echo "*** using hack for ckan.site_url" && \
+    perl -pi -e "s|^(ckan.site_url =)$|\1 ${DEV_CKAN_SITE_URL}|;" $CKAN_INI && \
+    ## end hack
+    ckan config-tool ${CKAN_INI} "ckan.plugins=${CKAN__PLUGINS}"
 
 COPY setup/supervisord.conf /etc
 
-# Install CKAN
-RUN pip install -e git+${GIT_URL}@${GIT_SHA}#egg=ckan && \
-    cd ${SRC_DIR}/ckan && \
-    cp who.ini ${APP_DIR} && \
-    pip install --no-binary :all: -r requirements-py2.txt && \
-    # Install CKAN envvars to support loading config from environment variables
-    pip install -e git+https://github.com/okfn/ckanext-envvars.git#egg=ckanext-envvars
-
 # Create a local user and group to run the app
-RUN addgroup -g 92 -S ckan && \
-    adduser -u 92 -h /srv/app -H -D -S -G ckan ckan
+RUN groupadd -g 92 ckan && \
+    useradd -u 92 -d /srv/app -m -g ckan ckan
 
 # Create local storage folder
 RUN mkdir -p $CKAN_STORAGE_PATH && \
@@ -81,9 +79,8 @@ RUN mkdir -p $CKAN_STORAGE_PATH && \
 
 COPY setup ${APP_DIR}
 COPY setup/prerun-2.9.py ${APP_DIR}/prerun.py
-COPY setup/ckan_harvesting.conf /etc/supervisord.d/ckan_harvesting.conf
+COPY setup/ckan_harvesting-2.9.conf /etc/supervisord.d/ckan_harvesting.conf
 COPY setup/supervisor.worker-2.9.conf /etc/supervisord.d/worker.conf
-COPY setup/uwsgi.conf /srv/app/uwsgi.conf
 
 # Create entrypoint directory for children image scripts
 ONBUILD RUN mkdir /docker-entrypoint.d
@@ -91,5 +88,3 @@ ONBUILD RUN mkdir /docker-entrypoint.d
 RUN chown ckan -R /srv/app
 
 HEALTHCHECK --interval=10s --timeout=5s --retries=5 CMD curl --fail http://localhost:$CKAN_PORT/api/3/action/status_show || exit 1
-
-CMD ["/srv/app/start_ckan.sh"]
