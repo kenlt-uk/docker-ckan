@@ -78,9 +78,9 @@ RUN mkdir -p $CKAN_STORAGE_PATH && \
     chown -R ckan:ckan $CKAN_STORAGE_PATH
 
 COPY setup ${APP_DIR}
-COPY setup/prerun-2.9.py ${APP_DIR}/prerun.py
-COPY setup/ckan_harvesting-2.9.conf /etc/supervisord.d/ckan_harvesting.conf
-COPY setup/supervisor.worker-2.9.conf /etc/supervisord.d/worker.conf
+COPY setup/2.9/prerun.py ${APP_DIR}/prerun.py
+COPY setup/2.9/ckan_harvesting.conf /etc/supervisord.d/ckan_harvesting.conf
+COPY setup/2.9/supervisor.worker.conf /etc/supervisord.d/worker.conf
 
 # Create entrypoint directory for children image scripts
 ONBUILD RUN mkdir /docker-entrypoint.d
@@ -88,3 +88,5 @@ ONBUILD RUN mkdir /docker-entrypoint.d
 RUN chown ckan -R /srv/app
 
 HEALTHCHECK --interval=10s --timeout=5s --retries=5 CMD curl --fail http://localhost:$CKAN_PORT/api/3/action/status_show || exit 1
+
+CMD ["/srv/app/start_ckan.sh"]

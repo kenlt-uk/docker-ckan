@@ -95,9 +95,7 @@ if [[ $START_CKAN = 1 ]]; then
     echo "Starting CKAN..."
 
     # Start supervisord
-    ## commented out as ckan processes are not starting up
-    ## need to manually start the processes to see what errors there are
-    # supervisord --configuration /etc/supervisord.conf &
+    supervisord --configuration /etc/supervisord.conf &
 
     # Start the development server with automatic reload
     ckan -c $CKAN_INI run --host 0.0.0.0
