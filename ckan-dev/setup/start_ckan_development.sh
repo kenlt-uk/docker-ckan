@@ -45,7 +45,7 @@ done
 
 # Set debug to true
 echo "Enabling debug mode"
-paster --plugin=ckan config-tool $CKAN_INI -s DEFAULT "debug = true"
+paster --plugin=ckan config-tool $CKAN_INI -s DEFAULT "debug = $CKAN_DEBUG"
 
 # Update the plugins setting in the ini file with the values defined in the env var
 echo "Loading the following plugins: $CKAN__PLUGINS"
