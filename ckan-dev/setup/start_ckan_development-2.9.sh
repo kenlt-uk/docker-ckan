@@ -7,9 +7,9 @@ echo "Extension dir contents:"
 ls -la $SRC_EXTENSIONS_DIR
 for i in $SRC_EXTENSIONS_DIR/*
 do
-    if [ -d $i ] && [ $(basename $i) != 'ckan' ] && (
-        [ -z "$DEV_EXTENSIONS_WHITELIST" ] || [[ ",$DEV_EXTENSIONS_WHITELIST," =~ ",$(basename $i)," ]]
-    );
+    if [ -d $i ] && [ $(basename $i) == 'ckan' ]; then
+        echo "Ignoring CKAN"
+    elif [ -d $i ] && ([ -z "$DEV_EXTENSIONS_WHITELIST" ] || [[ ",$DEV_EXTENSIONS_WHITELIST," =~ ",$(basename $i)," ]]);
     then
 
         if [ -f $i/pip-requirements.txt ];
@@ -53,7 +53,7 @@ echo "Loading the following plugins: $CKAN__PLUGINS"
 ckan config-tool $CKAN_INI \
     "sqlalchemy.url = $DEV_CKAN_SQLALCHEMY_URL" \
     "ckan.site_url = $DEV_CKAN_SITE_URL" \
-    "solr_url = $CKAN_SOLR_URL" \
+    "solr_url = $DEV_CKAN_SOLR_URL" \
     "ckan.redis.url = $DEV_CKAN_REDIS_URL" \
     "ckan.site_url = $DEV_CKAN_SITE_URL" \
     "ckan.plugins = $CKAN__PLUGINS"
