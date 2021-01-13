@@ -1,4 +1,4 @@
-FROM govuk/trusty-python3:3.6
+FROM govuk/python:3.6.12
 
 # Internals, you probably don't need to change these
 ENV APP_DIR=/srv/app
