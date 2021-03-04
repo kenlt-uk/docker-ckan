@@ -144,11 +144,33 @@ If the problem persists even after running a `./scripts/reset-ckan.sh`, it may b
     docker network prune -f
     docker rmi -f $(docker images --filter dangling=true -qa)
 
+#### Manually starting up a container
+
+This may be useful in order to get the container running if it is not staying up.
+
+Comment out the existing `command` line in relevant `docker-compose.yml` file and add another `command`:
+
+    command: bash -c "tail -f /dev/null"
+
+Then you will have to exec into the container, which should be something like this:
+
+    docker exec -it <container name> bash
+
+You may need to replace `bash` with `sh` or an equivalent if that doesn't work.
+
+Once on the docker container you need to run the script that starts up the app,for CKAN this is:
+
+    ./start_ckan_development.sh
+
 #### Manually running a harvest job
 
-In order to run a harvest job manually, you need to run these commands on the container - 
+In order to run a harvest job manually, you need to run these commands on the container (2.7, 2.8):
 
-    paster --plugin=ckanext-harvest harvester run_test test-harvest-source-name -c $CKAN_INI
+    paster --plugin=ckanext-harvest harvester run_test <test-harvest-source-name> -c $CKAN_INI
+
+For 2.9:
+
+    ckan -c $CKAN_INI harvester run-test <test-harvest-source-name>
 
 The `test-harvest-source-name` can be derived from the URL after creating a harvest source.
 
@@ -185,6 +207,8 @@ A [testing document](TESTING.md) is available which describes the testing tools 
 
 ### Running tests for extensions
 
+### 2.7 and 2.8
+
 #### ckanext-harvest
 
     nosetests --ckan  --nologcapture --with-pylons=$SRC_EXTENSIONS_DIR/ckanext-harvest/test-nose.ini ckanext.harvest
@@ -213,7 +237,7 @@ For the code to be picked up by supervisorctl, the process needs to be restarted
 
     nosetests --ckan --with-pylons=$SRC_EXTENSIONS_DIR/ckan/test-core.ini ckan
 
-#### target tests
+#### Target tests
 
     nosetests ... ckanext.<ckanext extension>.tests.<filename without .py>:<test class name>.<test class method>
 
@@ -223,13 +247,58 @@ For example:
 
     nosetests --ckan -v --nologcapture --with-pylons=$SRC_EXTENSIONS_DIR/ckanext-datagovuk/test.ini ckanext.datagovuk.tests.test_package:TestPackageController.test_package_create_show
 
+### 2.9
+
+#### ckanext-harvest
+
+    (cd $SRC_EXTENSIONS_DIR/ckanext-harvest && python -m pytest --ckan-ini=test.ini ckanext/harvest/tests --disable-pytest-warnings -v)
+
+#### ckanext-spatial
+
+    (cd $SRC_EXTENSIONS_DIR/ckanext-spatial && python -m pytest --ckan-ini=test.ini ckanext/spatial/tests --disable-pytest-warnings -v)
+
+#### ckanext-dcat
+
+    (cd $SRC_EXTENSIONS_DIR/ckanext-dcat && python -m pytest --ckan-ini=test.ini ckanext/dcat/tests --disable-pytest-warnings -v)
+
+#### ckanext-datagovuk
+
+    (cd $SRC_EXTENSIONS_DIR/ckanext-datagovuk && python -m pytest --ckan-ini=test.ini tests --disable-pytest-warnings -v)
+
+#### Target tests
+
+    (cd $SRC_EXTENSIONS_DIR/ckanext-<extension> && python -m pytest --ckan-ini=test.ini ckanext/<extension>/tests/<test file>::<class>.<test name> --disable-pytest-warnings -v)
+
+    for datagovuk:
+
+    (cd $SRC_EXTENSIONS_DIR/ckanext-<extension> && python -m pytest --ckan-ini=test.ini tests/<test file>::<class>.<test name> --disable-pytest-warnings -v)
+
+For example:
+
+    (cd $SRC_EXTENSIONS_DIR/ckanext-spatial && python -m pytest --ckan-ini=test.ini ckanext/spatial/tests/test_harvest.py::TestHarvest::test_harvest_deleted_record --disable-pytest-warnings -v)
+
+#### Troubleshooting tests
+
+If you are experiencing problems running the tests you can run these commands to reset the test config and test database:
+
+```
+# initialise the CKAN and extension configs
+source ./init_config.sh
+
+# drop postgis extension and log_level type from test database to enable tests to run
+PGPASSWORD=ckan psql -h db -U ckan -d ckan_test -c "DROP EXTENSION IF EXISTS postgis CASCADE; DROP TYPE IF EXISTS log_level CASCADE;"
+```
+
+For spatial tests also run this script if they continue to fail - 
+
+    source /docker-entrypoint.d/setup_spatial.sh
 
 ### Create an extension
 
 You can use the paster template in much the same way as a source install, only executing the command inside the CKAN container and setting the mounted `src/` folder as output:
 
     docker-compose -f docker-compose.dev.yml exec ckan-dev /bin/bash -c "paster --plugin=ckan create -t ckanext ckanext-myext -o /srv/app/src_extensions"
-
+ 
 The new extension will be created in the `src/` folder. You might need to change the owner of its folder to have the appropiate permissions.
 
 ### Logs
@@ -242,7 +311,8 @@ Datagov UK Find logs are available under `find.log`
 
 ### Running the remote debugger remote-pdb
 
-This is useful when debugging tests.
+This is useful when debugging tests on 2.7 and 2.8.
+For 2.9 the standard `pdb` library appears to be working.
 
 Add the following line to the part of the code to set a breakpoint:
 
