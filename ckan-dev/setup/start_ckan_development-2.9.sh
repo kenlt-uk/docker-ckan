@@ -12,7 +12,10 @@ do
     elif [ -d $i ] && ([ -z "$DEV_EXTENSIONS_WHITELIST" ] || [[ ",$DEV_EXTENSIONS_WHITELIST," =~ ",$(basename $i)," ]]);
     then
 
-        if [ -f $i/pip-requirements.txt ];
+        if [ -f $i/pip3-requirements.txt ];
+        then
+            pip install -r $i/pip3-requirements.txt
+        elif [ -f $i/pip-requirements.txt ];
         then
             pip install -r $i/pip-requirements.txt
             echo "Found requirements file in $i"
@@ -77,6 +80,12 @@ ckan config-tool $APP_DIR/production.ini \
 
 # Run the prerun script to init CKAN and create the default admin user
 python prerun.py
+
+# initialise the CKAN and extension configs
+source ./init_config.sh
+
+# drop postgis extension and log_level type from test database to enable tests to run
+PGPASSWORD=ckan psql -h db -U ckan -d ckan_test -c "DROP EXTENSION IF EXISTS postgis CASCADE; DROP TYPE IF EXISTS log_level CASCADE;"
 
 # Run any startup scripts provided by images extending this one
 if [[ -d "/docker-entrypoint.d" ]]
