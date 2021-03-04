@@ -3,6 +3,8 @@
 # Default git fork
 CKAN_FORK=ckan
 DATAGOVUK_BRANCH=master
+DCAT_FORK=ckan
+DCAT_BRANCH=master
 SPATIAL_BRANCH=master
 HARVEST_FORK=ckan
 HARVEST_BRANCH=master
@@ -20,6 +22,8 @@ elif [[ ! -z $1 && $1 == '2.9' ]]; then
     CKAN_VERSION=2.9.1
     CKAN_FORK=ckan
     SRC_DIR=2.9
+    DCAT_FORK=alphagov
+    DCAT_BRANCH=update-test-harvester
 else
     CKAN_VERSION=2.8.3-dgu
     CKAN_FORK=alphagov
@@ -36,7 +40,7 @@ git clone https://github.com/$CKAN_FORK/ckan --branch ckan-$CKAN_VERSION
 git clone https://github.com/alphagov/ckanext-datagovuk --branch $DATAGOVUK_BRANCH 
 git clone https://github.com/$HARVEST_FORK/ckanext-harvest --branch $HARVEST_BRANCH
 git clone https://github.com/$SPATIAL_FORK/ckanext-spatial --branch $SPATIAL_BRANCH
-git clone https://github.com/ckan/ckanext-dcat
+git clone https://github.com/$DCAT_FORK/ckanext-dcat --branch $DCAT_BRANCH
 git clone https://github.com/geopython/pycsw.git --branch 2.4.0 
 
 git clone https://github.com/alphagov/ckan-mock-harvest-sources.git
