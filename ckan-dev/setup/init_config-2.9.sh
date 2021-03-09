@@ -35,7 +35,7 @@ do
         if [ -f $i/test.ini ]; then
             echo "=== Updating test config in $i"
             ckan config-tool $i/test.ini \
-                "use = config:../../src/ckan/test-core.ini" \
+                "use = config:$SRC_DIR/ckan/test-core.ini" \
                 "sqlalchemy.url = $TEST_CKAN_SQLALCHEMY_URL" \
                 "ckan.site_url = $TEST_CKAN_SITE_URL" \
                 "solr_url = $TEST_CKAN_SOLR_URL" \
