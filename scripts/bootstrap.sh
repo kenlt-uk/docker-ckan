@@ -19,7 +19,7 @@ elif [[ ! -z $1 && $1 == '2.9' ]]; then
     HARVEST_BRANCH=master
     SPATIAL_FORK=alphagov
     SPATIAL_BRANCH=main-2.9
-    CKAN_VERSION=2.9.1
+    CKAN_VERSION=2.9.2
     CKAN_FORK=ckan
     SRC_DIR=2.9
     DCAT_FORK=alphagov

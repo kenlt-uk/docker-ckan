@@ -1,6 +1,5 @@
 FROM govuk/python:3.6.12
 
-# Internals, you probably don't need to change these
 ENV APP_DIR=/srv/app
 ENV SRC_DIR=/srv/app/src
 ENV CKAN_INI=${APP_DIR}/production.ini
@@ -14,9 +13,9 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
-# ckan 2.9.1 release tag
 ENV GIT_URL=https://github.com/ckan/ckan.git
-ENV GIT_SHA=bb272bfc7167b35cbff8ce48ed815dd4e23597ba
+# ckan 2.9.2 release tag
+ENV GIT_SHA=1b6d91790cfa668a6226f366b91dde68ae5d84b9
 
 WORKDIR ${APP_DIR}
 
@@ -60,11 +59,6 @@ RUN python3.6 -m venv ${VIRTUAL_ENV} && \
     # Install CKAN envvars to support loading config from environment variables
     pip install -e git+https://github.com/okfn/ckanext-envvars.git#egg=ckanext-envvars && \
     ckan generate config ${CKAN_INI} && \
-    ## code to handle problem with config-tool - https://github.com/ckan/ckan/issues/5568
-    # site url can't be set with the config tool
-    echo "*** using hack for ckan.site_url" && \
-    perl -pi -e "s|^(ckan.site_url =)$|\1 ${DEV_CKAN_SITE_URL}|;" $CKAN_INI && \
-    ## end hack
     ckan config-tool ${CKAN_INI} "ckan.plugins=${CKAN__PLUGINS}"
 
 COPY setup/supervisord.conf /etc
