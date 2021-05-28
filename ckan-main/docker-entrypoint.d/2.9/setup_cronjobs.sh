@@ -1,5 +1,5 @@
 # run harvest job to start or set job status
-echo "*/5 * * * * ckan -c $CKAN_INI harvester run" > /etc/crontabs/root
+echo "*/5 * * * * ckan -c $CKAN_INI harvester run" >> /etc/crontab
 
 # clean up harvest logs
 echo "*/30 * * * * ckan -c $CKAN_INI harvester clean-harvest-log" >> /etc/crontab
