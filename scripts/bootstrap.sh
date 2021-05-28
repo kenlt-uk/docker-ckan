@@ -2,7 +2,7 @@
 
 # Default git fork
 CKAN_FORK=ckan
-DATAGOVUK_BRANCH=master
+DATAGOVUK_BRANCH=main
 DCAT_FORK=ckan
 DCAT_BRANCH=master
 SPATIAL_BRANCH=master
@@ -28,7 +28,6 @@ else
     CKAN_VERSION=2.8.3-dgu
     CKAN_FORK=alphagov
     SRC_DIR=2.8
-    DATAGOVUK_BRANCH=master
 fi
 
 echo -e "Please ensure that the ${SRC_DIR} src directory is empty before running this command. This command will not populate the directories required for this project to run effectively unless said directories are already empty or don't exist.\n"
