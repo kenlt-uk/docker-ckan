@@ -14,8 +14,8 @@ ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
 ENV GIT_URL=https://github.com/ckan/ckan.git
-# ckan 2.9.2 release tag
-ENV GIT_SHA=1b6d91790cfa668a6226f366b91dde68ae5d84b9
+# ckan 2.9.3 release tag
+ENV GIT_SHA=e8b7970423e2cce9731441edd13f7fcfd3be58e9
 
 WORKDIR ${APP_DIR}
 
