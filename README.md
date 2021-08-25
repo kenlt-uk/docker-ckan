@@ -267,7 +267,7 @@ For example:
 
 #### Target tests
 
-    (cd $SRC_EXTENSIONS_DIR/ckanext-<extension> && python -m pytest --ckan-ini=test.ini ckanext/<extension>/tests/<test file>::<class>.<test name> --disable-pytest-warnings -v)
+    (cd $SRC_EXTENSIONS_DIR/ckanext-<extension> && python -m pytest --ckan-ini=test.ini ckanext/<extension>/tests/<test file>::<class>::<test name> --disable-pytest-warnings -v)
 
     for datagovuk:
 
