@@ -1,0 +1,107 @@
+version: "3"
+
+services:
+  ckan-k8s:
+    container_name: ckan-k8s
+    image: govuk/ckan-k8s:2.9.4
+    build:
+      context: ckan-k8s/
+      dockerfile: Dockerfile
+      args:
+        # set DISABLE_CRON to 1 to disable harvest & pycsw cronjobs (good idea when running tests)
+        - DISABLE_CRON=1
+        # set START_CKAN to 1 to start ckan and supervisord, 0 to prevent them from starting
+        # stopping ckan and background processes can be useful during development to investigate bugs
+        - START_CKAN=1
+    env_file:
+      - .env-k8s
+    links:
+      - db-k8s:db
+      - solr-k8s:solr
+      - redis-k8s:redis
+      - static-mock-harvest-source-k8s:static-mock-harvest-source
+    ports:
+      - "0.0.0.0:3008:3000"
+    volumes:
+      - ./src/2.9:/srv/app/src_extensions
+      - ckan_storage-k8s:/var/lib/ckan
+      - ./logs/2.9:/var/log/ckan
+    depends_on: 
+      - db-k8s
+      - solr-k8s
+      - redis-k8s
+      - static-mock-harvest-source-k8s
+    command: bash -c "/srv/app/start_ckan_development.sh"
+    # command: bash -c "tail -f /dev/null"
+    networks:
+      - ckan-net-k8s
+
+  db-k8s:
+    container_name: db-k8s
+    env_file:
+      - .env-k8s
+    build:
+      context: postgresql/
+    volumes:
+      - pg_data-k8s:/var/lib/postgresql/data
+    command: ["postgres", "-c", "log_statement=all"]
+    networks:
+      - ckan-net-k8s
+  
+  solr-k8s:
+    container_name: solr-k8s
+    build:
+      context: solr/
+      dockerfile: Dockerfile.k8s
+    ports:
+      - "8988:8983"
+    volumes:
+      - solr_data-k8s:/opt/solr/server/solr/ckan/data
+    networks:
+      - ckan-net-k8s
+  
+  redis-k8s:
+    container_name: redis-k8s
+    image: redis:6.2.5-alpine3.14
+    networks:
+      - ckan-net-k8s
+    volumes:
+      - redis_data-k8s:/data
+
+  nginx-k8s:
+    container_name: nginx-k8s
+    build:
+      context: nginx/
+      dockerfile: k8s/Dockerfile
+    links:
+      - ckan-k8s
+    ports:
+      - 0.0.0.0:5008:80
+    volumes:
+      - ./logs/k8s:/var/log/nginx
+    depends_on: 
+      - ckan-k8s
+    networks:
+      - ckan-net-k8s
+
+  static-mock-harvest-source-k8s:
+    container_name: static-mock-harvest-source-k8s
+    build:
+      context: ./src/2.9/ckan-mock-harvest-sources/static/
+    ports:
+      - "11091:11088"
+    volumes:
+      - ./src/2.9/ckan-mock-harvest-sources/static/responses:/srv/responses
+      - ./src/2.9/ckan-mock-harvest-sources/static/mock-third-party:/src/mock-third-party
+    networks:
+      - ckan-net-k8s
+
+volumes:
+  ckan_storage-k8s:
+  pg_data-k8s:
+  solr_data-k8s:
+  redis_data-k8s:
+
+networks:
+  ckan-net-k8s:
+      driver: bridge

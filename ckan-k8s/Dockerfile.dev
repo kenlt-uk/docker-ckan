@@ -1,0 +1,15 @@
+FROM govuk/ckan-k8s:2.9.4
+
+ENV SRC_EXTENSIONS_DIR=/srv/app/src
+
+USER root
+
+RUN mkdir /var/log/ckan && chown ckan:ckan /var/log/ckan
+RUN mkdir /var/lib/ckan && chown ckan:ckan /var/lib/ckan
+
+USER ckan
+
+# Prevent CKAN from running, dev will need to exec onto 
+# container and run ./start_ckan_development.sh to
+# start the web server
+ENTRYPOINT ["tail", "-f", "/dev/null"]
