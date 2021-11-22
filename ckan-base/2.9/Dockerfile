@@ -13,9 +13,9 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
-ENV GIT_URL=https://github.com/ckan/ckan.git
+ENV GIT_URL=https://github.com/alphagov/ckan.git
 # ckan 2.9.3 release tag
-ENV GIT_SHA=e8b7970423e2cce9731441edd13f7fcfd3be58e9
+ENV GIT_SHA=bc7ed57aba16f755adb39a9b38d04d543a4f4be1
 
 WORKDIR ${APP_DIR}
 
@@ -55,7 +55,9 @@ RUN python3.6 -m venv ${VIRTUAL_ENV} && \
     pip install -e git+${GIT_URL}@${GIT_SHA}#egg=ckan && \
     cd ${SRC_DIR}/ckan && \
     cp who.ini ${APP_DIR} && \
-    pip install --no-binary :all: -r requirements.txt && \
+    # changed pip install as problem with python-dateutil install 
+    # pip install --no-binary :all: -r requirements.txt && \
+    pip install -r requirements.txt && \
     # Install CKAN envvars to support loading config from environment variables
     pip install -e git+https://github.com/okfn/ckanext-envvars.git#egg=ckanext-envvars && \
     ckan generate config ${CKAN_INI} && \

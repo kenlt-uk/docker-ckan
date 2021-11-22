@@ -9,14 +9,14 @@ RUN echo UTC > /etc/timezone
 # Install any extensions needed by your CKAN instance
 # (Make sure to add the plugins to CKAN__PLUGINS in the .env file)
 
-ENV DCAT_SHA=dfeae13248b93fe542486262254cda7e627da2f6
+ENV DCAT_SHA=be3b809fa7431c8d81508c01853e81ce6a5dfd84
 ENV HARVEST_SHA=283ac0498fd22056fb8572d49b25cd8492b7178f
 ENV SPATIAL_SHA=d64fd925700990a352ef23ed180c47dbc7277138
 ENV DATAGOVUK_VERSION=main
 
 RUN pip install --upgrade setuptools && \
-    pip install -e git+https://github.com/ckan/ckanext-dcat.git@$DCAT_SHA#egg=ckanext-dcat && \
-    pip install -r https://raw.githubusercontent.com/ckan/ckanext-dcat/$DCAT_SHA/requirements.txt && \
+    pip install -e git+https://github.com/alphagov/ckanext-dcat.git@$DCAT_SHA#egg=ckanext-dcat && \
+    pip install -r https://raw.githubusercontent.com/alphagov/ckanext-dcat/$DCAT_SHA/requirements.txt && \
     pip install -e git+https://github.com/alphagov/ckanext-harvest.git@$HARVEST_SHA#egg=ckanext-harvest && \
     pip install -r https://raw.githubusercontent.com/alphagov/ckanext-harvest/$HARVEST_SHA/pip-requirements.txt && \
     pip install -e git+https://github.com/alphagov/ckanext-spatial.git@$SPATIAL_SHA#egg=ckanext-spatial && \
