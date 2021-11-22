@@ -23,7 +23,7 @@ elif [[ ! -z $1 && $1 == '2.9' ]]; then
     CKAN_FORK=ckan
     SRC_DIR=2.9
     DCAT_FORK=alphagov
-    DCAT_BRANCH=update-test-harvester
+    DCAT_BRANCH=update-requirements-rdflib-jsonld
 else
     CKAN_VERSION=2.8.3-dgu
     CKAN_FORK=alphagov
