@@ -16,7 +16,7 @@ services:
     env_file:
       - .env-2.9
     links:
-      - db-2.9:db
+      - db-2.9-13:db
       - solr-2.9:solr
       - redis-2.9:redis
     ports:
@@ -26,7 +26,7 @@ services:
       - ckan_storage-2.9:/var/lib/ckan
       - ./logs/2.9:/var/log/ckan
     depends_on: 
-      - db-2.9
+      - db-2.9-13
       - solr-2.9
       - redis-2.9
       - static-mock-harvest-source-2.9
@@ -34,17 +34,18 @@ services:
     networks:
       - ckan-2.9
 
-  db-2.9:
-    container_name: db-2.9
+  db-2.9-13:
+    container_name: db-2.9-13
     env_file:
       - .env-2.9
     build:
       context: postgresql/
+      dockerfile: Dockerfile.13
     volumes:
-      - pg_data-2.9:/var/lib/postgresql/data
+      - pg_data-2.9-13:/var/lib/postgresql/data
     networks:
       - ckan-2.9
-  
+
   solr-2.9:
     container_name: solr-2.9
     build:
@@ -58,7 +59,7 @@ services:
   
   redis-2.9:
     container_name: redis-2.9
-    image: redis:alpine
+    image: redis:6.2.5-alpine3.14
     networks:
       - ckan-2.9
     volumes:
@@ -92,7 +93,7 @@ services:
 
 volumes:
   ckan_storage-2.9:
-  pg_data-2.9:
+  pg_data-2.9-13:
   solr_data-2.9:
   redis_data-2.9:
 
