@@ -31,20 +31,8 @@ services:
       - redis-2.9
       - static-mock-harvest-source-2.9
     command: bash -c "/srv/app/start_ckan_development.sh"
-    # command: bash -c "tail -f /dev/null"
     networks:
       - ckan-2.9
-
-  # db-2.9:
-  #   container_name: db-2.9
-  #   env_file:
-  #     - .env-2.9
-  #   build:
-  #     context: postgresql/
-  #   volumes:
-  #     - pg_data-2.9:/var/lib/postgresql/data
-  #   networks:
-  #     - ckan-2.9
 
   db-2.9-13:
     container_name: db-2.9-13
@@ -105,7 +93,6 @@ services:
 
 volumes:
   ckan_storage-2.9:
-  # pg_data-2.9:
   pg_data-2.9-13:
   solr_data-2.9:
   redis_data-2.9:
