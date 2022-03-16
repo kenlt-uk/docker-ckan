@@ -1,24 +1,43 @@
 version: "3"
 
 services:
-  elasticsearch-2.9:
-    container_name: elasticsearch-2.9
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+  opensearch-2.9:
+    container_name: opensearch-2.9
+    image: opensearchproject/opensearch
     environment:
-      - node.name=elasticsearch
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
+      # - cluster.name=opensearch-cluster
+      # - node.name=opensearch-node1
+      - bootstrap.memory_lock=true # along with the memlock settings below, disables swapping
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+      - "DISABLE_INSTALL_DEMO_CONFIG=true" # disables execution of install_demo_configuration.sh bundled with security plugin, which installs demo certificates and security configurations to OpenSearch
+      - "DISABLE_SECURITY_PLUGIN=true" # disables security plugin entirely in OpenSearch by setting plugins.security.disabled: true in opensearch.yml
+      - "discovery.type=single-node"
     volumes:
-      - es_data-2.9:/usr/share/elasticsearch/data
+      - os_data-2.9:/usr/share/opensearch/data
     ports:
       - 9202:9200
+      - 9602:9600
     networks:
       - ckan-2.9
+
+  # elasticsearch-2.9:
+  #   container_name: elasticsearch-2.9
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+  #   environment:
+  #     - node.name=elasticsearch
+  #     - discovery.type=single-node
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - es_data-2.9:/usr/share/elasticsearch/data
+  #   ports:
+  #     - 9202:9200
+  #   networks:
+  #     - ckan-2.9
 
   publish-2.9:
     image: govuk/publish:latest
@@ -28,15 +47,18 @@ services:
     env_file:
       - .env-2.9
     links:
-      - db-2.9:db
-      - elasticsearch-2.9:elasticsearch
+      - db-2.9-13:db
+      # - elasticsearch-2.9:elasticsearch
+      - opensearch-2.9:elasticsearch
       - redis-2.9:redis
       - ckan-postdev-2.9:ckan-postdev
     depends_on: 
-      - db-2.9
-      - elasticsearch-2.9
+      - db-2.9-13
+      # - elasticsearch-2.9
+      - opensearch-2.9
       - redis-2.9
-    command: bash -c "./bin/setup-docker.sh"
+    # command: bash -c "./bin/setup-docker.sh"
+    command: bash -c "tail -f /dev/null"
     volumes:
       - ./src/2.9/datagovuk_publish:/srv/app/datagovuk_publish
       - ./logs/2.9:/var/log/sidekiq
@@ -46,15 +68,18 @@ services:
   find-2.9:
     image: govuk/find:latest
     container_name: find-2.9
-    build:
+    build:  
       context: ./src/2.9/datagovuk_find/
     env_file:
       - .env-2.9
     links:
-      - elasticsearch-2.9:elasticsearch
+      # - elasticsearch-2.9:elasticsearch
+      - opensearch-2.9:elasticsearch
     depends_on: 
-      - elasticsearch-2.9
-    command: bash -c "./bin/setup-docker.sh"
+      # - elasticsearch-2.9
+      - opensearch-2.9
+    # command: bash -c "./bin/setup-docker.sh"
+    command: bash -c "tail -f /dev/null"
     volumes:
       - ./src/2.9/datagovuk_find:/srv/app/datagovuk_find
       - ./logs/2.9:/var/log/find
@@ -64,7 +89,8 @@ services:
       - "4002:3000"
 
 volumes:
-  es_data-2.9:
+  # es_data-2.9:
+  os_data-2.9:
 
 networks:
     ckan-2.9:
