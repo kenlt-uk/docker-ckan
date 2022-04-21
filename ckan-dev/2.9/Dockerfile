@@ -6,7 +6,8 @@ ENV APP_DIR=/srv/app
 ENV SRC_EXTENSIONS_DIR=/srv/app/src_extensions
 
 # Install CKAN dev requirements
-RUN pip install -r $SRC_DIR/ckan/dev-requirements.txt
+RUN pip install -r $SRC_DIR/ckan/dev-requirements.txt && \
+    pip install pytest-ckan
 
 # Create ckan log dir
 RUN mkdir -p /var/log/ckan
