@@ -51,6 +51,7 @@ RUN apt-get -y install tzdata \
 
 # Install CKAN
 RUN python3.6 -m venv ${VIRTUAL_ENV} && \
+    pip install --upgrade pip && \ 
     pip install supervisor && \
     pip install -e git+${GIT_URL}@${GIT_SHA}#egg=ckan && \
     cd ${SRC_DIR}/ckan && \
